@@ -10,5 +10,6 @@ module.exports = defineConfig({
           args[0].title = "i实习管理平台";
           return args;
         })
-  }
+  },
+
 })
