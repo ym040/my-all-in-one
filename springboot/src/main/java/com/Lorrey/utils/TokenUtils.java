@@ -2,6 +2,9 @@ package com.Lorrey.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.Lorrey.service.EnterpriseService;
+import com.Lorrey.service.StudentService;
+import com.Lorrey.service.TeacherService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.Lorrey.common.Constants;
@@ -28,13 +31,25 @@ public class TokenUtils {
     private static final Logger log = LoggerFactory.getLogger(TokenUtils.class);
 
     private static AdminService staticAdminService;
+    private static TeacherService staticTeacherService;
+    private static StudentService staticStudentService;
+    private static EnterpriseService staticEnterpriseService;
 
     @Resource
     AdminService adminService;
+    @Resource
+    TeacherService teacherService;
+    @Resource
+    StudentService studentService;
+    @Resource
+    EnterpriseService enterpriseService;
 
     @PostConstruct
     public void setUserService() {
         staticAdminService = adminService;
+        staticTeacherService = teacherService;
+        staticStudentService = studentService;
+        staticEnterpriseService = enterpriseService;
     }
 
     /**
@@ -59,6 +74,15 @@ public class TokenUtils {
                 String role = userRole.split("-")[1];    // 获取角色
                 if (RoleEnum.ADMIN.name().equals(role)) {
                     return staticAdminService.selectById(Integer.valueOf(userId));
+                }
+                if (RoleEnum.TEACHER.name().equals(role)) {
+                    return staticTeacherService.selectById(Integer.valueOf(userId));
+                }
+                if (RoleEnum.STUDENT.name().equals(role)) {
+                    return staticStudentService.selectById(Integer.valueOf(userId));
+                }
+                if (RoleEnum.ENTERPRISE.name().equals(role)) {
+                    return staticEnterpriseService.selectById(Integer.valueOf(userId));
                 }
             }
         } catch (Exception e) {

@@ -4,11 +4,16 @@ import cn.hutool.core.util.ObjectUtil;
 import com.Lorrey.common.Constants;
 import com.Lorrey.common.enums.ResultCodeEnum;
 import com.Lorrey.common.enums.RoleEnum;
+import com.Lorrey.entity.Account;
+import com.Lorrey.entity.Admin;
+import com.Lorrey.entity.Enterprise;
 import com.Lorrey.entity.Teacher;
 import com.Lorrey.exception.CustomException;
 import com.Lorrey.mapper.TeacherMapper;
+import com.Lorrey.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -85,6 +90,48 @@ public class TeacherService {
         PageHelper.startPage(pageNum, pageSize);
         List<Teacher> list = teacherMapper.selectAll(teacher);
         return PageInfo.of(list);
+    }
+
+    /**
+     * 登录
+     */
+    public Account login(Account account) {
+        Account dbTeacher = teacherMapper.selectByUsername(account.getUsername());
+        if (ObjectUtil.isNull(dbTeacher)) {
+            throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
+        }
+        if (!account.getPassword().equals(dbTeacher.getPassword())) {
+            throw new CustomException(ResultCodeEnum.USER_ACCOUNT_ERROR);
+        }
+        // 生成token
+        String tokenData = dbTeacher.getId() + "-" + RoleEnum.TEACHER.name();
+        String token = TokenUtils.createToken(tokenData, dbTeacher.getPassword());
+        dbTeacher.setToken(token);
+        return dbTeacher;
+    }
+
+    /**
+     * 注册
+     */
+    public void register(Account account) {
+        Teacher teacher = new Teacher();
+        BeanUtils.copyProperties(account, teacher);
+        add(teacher);
+    }
+
+    /**
+     * 修改密码
+     */
+    public void updatePassword(Account account) {
+        Teacher dbTeacher = teacherMapper.selectByUsername(account.getUsername());
+        if (ObjectUtil.isNull(dbTeacher)) {
+            throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
+        }
+        if (!account.getPassword().equals(dbTeacher.getPassword())) {
+            throw new CustomException(ResultCodeEnum.PARAM_PASSWORD_ERROR);
+        }
+        dbTeacher.setPassword(account.getNewPassword());
+        teacherMapper.updateById(dbTeacher);
     }
 }
 

@@ -1,6 +1,9 @@
 package com.Lorrey.common.config;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.Lorrey.service.EnterpriseService;
+import com.Lorrey.service.StudentService;
+import com.Lorrey.service.TeacherService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -30,6 +33,12 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Resource
     private AdminService adminService;
+    @Resource
+    private TeacherService teacherService;
+    @Resource
+    private StudentService studentService;
+    @Resource
+    private EnterpriseService enterpriseService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -52,6 +61,15 @@ public class JwtInterceptor implements HandlerInterceptor {
             // 根据userId查询数据库
             if (RoleEnum.ADMIN.name().equals(role)) {
                 account = adminService.selectById(Integer.valueOf(userId));
+            }
+            if (RoleEnum.TEACHER.name().equals(role)) {
+                account = teacherService.selectById(Integer.valueOf(userId));
+            }
+            if (RoleEnum.STUDENT.name().equals(role)) {
+                account = studentService.selectById(Integer.valueOf(userId));
+            }
+            if (RoleEnum.ENTERPRISE.name().equals(role)) {
+                account = enterpriseService.selectById(Integer.valueOf(userId));
             }
         } catch (Exception e) {
             throw new CustomException(ResultCodeEnum.TOKEN_CHECK_ERROR);

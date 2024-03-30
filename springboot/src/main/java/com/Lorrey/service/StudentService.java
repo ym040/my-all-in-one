@@ -4,11 +4,16 @@ import cn.hutool.core.util.ObjectUtil;
 import com.Lorrey.common.Constants;
 import com.Lorrey.common.enums.ResultCodeEnum;
 import com.Lorrey.common.enums.RoleEnum;
+import com.Lorrey.entity.Account;
+import com.Lorrey.entity.Admin;
+import com.Lorrey.entity.Enterprise;
 import com.Lorrey.entity.Student;
 import com.Lorrey.exception.CustomException;
 import com.Lorrey.mapper.StudentMapper;
+import com.Lorrey.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -85,6 +90,48 @@ public class StudentService {
         PageHelper.startPage(pageNum, pageSize);
         List<Student> list = studentMapper.selectAll(student);
         return PageInfo.of(list);
+    }
+
+    /**
+     * 登录
+     */
+    public Account login(Account account) {
+        Account dbStudent = studentMapper.selectByUsername(account.getUsername());
+        if (ObjectUtil.isNull(dbStudent)) {
+            throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
+        }
+        if (!account.getPassword().equals(dbStudent.getPassword())) {
+            throw new CustomException(ResultCodeEnum.USER_ACCOUNT_ERROR);
+        }
+        // 生成token
+        String tokenData = dbStudent.getId() + "-" + RoleEnum.STUDENT.name();
+        String token = TokenUtils.createToken(tokenData, dbStudent.getPassword());
+        dbStudent.setToken(token);
+        return dbStudent;
+    }
+
+    /**
+     * 注册
+     */
+    public void register(Account account) {
+        Student student = new Student();
+        BeanUtils.copyProperties(account, student);
+        add(student);
+    }
+
+    /**
+     * 修改密码
+     */
+    public void updatePassword(Account account) {
+        Student dbStudent = studentMapper.selectByUsername(account.getUsername());
+        if (ObjectUtil.isNull(dbStudent)) {
+            throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
+        }
+        if (!account.getPassword().equals(dbStudent.getPassword())) {
+            throw new CustomException(ResultCodeEnum.PARAM_PASSWORD_ERROR);
+        }
+        dbStudent.setPassword(account.getNewPassword());
+        studentMapper.updateById(dbStudent);
     }
 }
 

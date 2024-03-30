@@ -13,6 +13,14 @@
           <el-input prefix-icon="el-icon-lock" placeholder="请确认密码" show-password  v-model="form.confirmPass"></el-input>
         </el-form-item>
         <el-form-item>
+          <el-select v-model="form.role" placeholder="请选择角色" style="width: 100%">
+            <el-option label="管理员" value="ADMIN"></el-option>
+            <el-option label="教师" value="TEACHER"></el-option>
+            <el-option label="学生" value="STUDENT"></el-option>
+            <el-option label="企业" value="ENTERPRISE"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
           <el-button style="width: 100%; background-color: #333; border-color: #333; color: white" @click="register">注 册</el-button>
         </el-form-item>
         <div style="display: flex; align-items: center">

@@ -109,15 +109,6 @@ public class AdminService {
     }
 
     /**
-     * 注册
-     */
-    public void register(Account account) {
-        Admin admin = new Admin();
-        BeanUtils.copyProperties(account, admin);
-        add(admin);
-    }
-
-    /**
      * 修改密码
      */
     public void updatePassword(Account account) {
