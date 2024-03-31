@@ -1,0 +1,81 @@
+package com.Lorrey.service;
+
+import cn.hutool.core.util.ObjectUtil;
+import com.Lorrey.common.enums.ResultCodeEnum;
+import com.Lorrey.entity.Apply;
+import com.Lorrey.exception.CustomException;
+import com.Lorrey.mapper.ApplyMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * 实习报名信息业务处理
+ **/
+@Service
+public class ApplyService {
+
+    @Resource
+    private ApplyMapper applyMapper;
+
+    /**
+     * 新增
+     */
+    public void add(Apply apply) {
+        Apply dbApply = applyMapper.selectByUsername(apply.getUsername());
+        if (ObjectUtil.isNotNull(dbApply)) {
+            throw new CustomException(ResultCodeEnum.USER_EXIST_ERROR);
+        }
+        applyMapper.insert(apply);
+    }
+
+    /**
+     * 删除
+     */
+    public void deleteById(Integer id) {
+        applyMapper.deleteById(id);
+    }
+
+    /**
+     * 批量删除
+     */
+    public void deleteBatch(List<Integer> ids) {
+        for (Integer id : ids) {
+            applyMapper.deleteById(id);
+        }
+    }
+
+    /**
+     * 修改
+     */
+    public void updateById(Apply apply) {
+        applyMapper.updateById(apply);
+    }
+
+    /**
+     * 根据ID查询
+     */
+    public Apply selectById(Integer id) {
+        return applyMapper.selectById(id);
+    }
+
+    /**
+     * 查询所有
+     */
+    public List<Apply> selectAll(Apply apply) {
+        return applyMapper.selectAll(apply);
+    }
+
+    /**
+     * 分页查询
+     */
+    public PageInfo<Apply> selectPage(Apply apply, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Apply> list = applyMapper.selectAll(apply);
+        return PageInfo.of(list);
+    }
+}
+

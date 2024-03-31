@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Lorrey.mapper.ApplyMapper">
+
+    <sql id="Base_Column_List">
+        id,username,name,class_id,phone,enterprise_id,job_id,salary,address,begin_time,end_time
+    </sql>
+
+    <select id="selectAll" resultType="com.Lorrey.entity.Apply">
+        select
+        <include refid="Base_Column_List" />
+        from apply
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="username != null"> and username like concat('%', #{username}, '%')</if>
+            <if test="name != null"> and name = #{name}</if>
+            <if test="classId != null"> and class_id= #{classId}</if>
+            <if test="phone != null"> and phone= #{phone}</if>
+            <if test="enterpriseId != null"> and enterprise_id= #{enterpriseId}</if>
+            <if test="jobId != null"> and job_id= #{jobId}</if>
+            <if test="salary != null"> and salary= #{salary}</if>
+            <if test="address != null"> and address= #{address}</if>
+            <if test="beginTime != null"> and begin_time= #{beginTime}</if>
+            <if test="endTime != null"> and end_time= #{endTime}</if>
+        </where>
+    </select>
+
+    <select id="selectById" resultType="com.Lorrey.entity.Apply">
+        select
+        <include refid="Base_Column_List" />
+        from apply
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from apply
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.Lorrey.entity.Apply" useGeneratedKeys="true">
+        insert into apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+            <if test="username != null">username,</if>
+                <if test="name != null">name,</if>
+                <if test="classId != null">class_id,</if>
+                <if test="phone != null">phone,</if>
+                <if test="enterpriseId != null">enterprise_id,</if>
+                <if test="jobId != null">job_id,</if>
+                <if test="salary != null">salary,</if>
+                <if test="address != null">address,</if>
+                <if test="beginTime != null">begin_time,</if>
+                <if test="endTime != null">end_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="username != null">#{username},</if>
+                <if test="name != null">#{name},</if>
+                <if test="classId != null">#{classId},</if>
+                <if test="phone != null">#{phone},</if>
+                <if test="enterpriseId != null">#{enterpriseId},</if>
+                <if test="jobId != null">#{jobId},</if>
+                <if test="salary != null">#{salary},</if>
+                <if test="address != null">#{address},</if>
+                <if test="beginTime != null">#{beginTime},</if>
+                <if test="endTime != null">#{endTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.Lorrey.entity.Apply">
+        update apply
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="enterpriseId != null">
+                enterprise_id = #{enterpriseId},
+            </if>
+            <if test="jobId != null">
+                job_id = #{jobId},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="beginTime != null">
+                begin_time = #{beginTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
