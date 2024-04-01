@@ -8,7 +8,7 @@
       <div style="width: 50%;" class="card">
         <div style="margin-bottom: 30px; font-size: 20px; font-weight: bold">公告列表</div>
         <div >
-          <el-timeline  reverse slot="reference">
+          <el-timeline slot="reference">
             <el-timeline-item v-for="item in notices" :key="item.id" :timestamp="item.time">
               <el-popover
                   placement="right"
@@ -16,6 +16,22 @@
                   trigger="hover"
                   :content="item.content">
                 <span slot="reference">{{ item.title }}</span>
+              </el-popover>
+            </el-timeline-item>
+          </el-timeline>
+        </div>
+      </div>
+      <div style="width: 50%;" class="card">
+        <div style="margin-bottom: 30px; font-size: 20px; font-weight: bold">实习安排</div>
+        <div >
+          <el-timeline slot="reference"> <!--reverse-->
+            <el-timeline-item v-for="item in workplans" :key="item.id" :timestamp="item.time">
+              <el-popover
+                  placement="right"
+                  width="200"
+                  trigger="hover"
+                  :content="item.content">
+                <span slot="reference">{{ item.name }}</span>
               </el-popover>
             </el-timeline-item>
           </el-timeline>
@@ -32,12 +48,20 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      notices: []
+      notices: [],
+      workplans: []
     }
   },
   created() {
     this.$request.get('/notice/selectAll').then(res => {
       this.notices = res.data || []
+    })
+    this.$request.get('/workplan/selectAll').then(res => {
+      if (res.code === '200') {
+        this.workplans = res.data || []
+      } else {
+        this.$message.error(res.msg)
+      }
     })
   }
 }
