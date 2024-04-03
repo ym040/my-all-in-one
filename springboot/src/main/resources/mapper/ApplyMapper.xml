@@ -16,10 +16,7 @@
             <if test="id != null"> and id= #{id}</if>
             <if test="username != null"> and username like concat('%', #{username}, '%')</if>
             <if test="name != null"> and name = #{name}</if>
-            <if test="classId != null"> and class_id= #{classId}</if>
             <if test="phone != null"> and phone= #{phone}</if>
-            <if test="enterpriseId != null"> and enterprise_id= #{enterpriseId}</if>
-            <if test="jobId != null"> and job_id= #{jobId}</if>
             <if test="salary != null"> and salary= #{salary}</if>
             <if test="address != null"> and address= #{address}</if>
             <if test="beginTime != null"> and begin_time= #{beginTime}</if>
@@ -92,6 +89,9 @@
             </if>
             <if test="salary != null">
                 salary = #{salary},
+            </if>
+            <if test="address != null">
+                address = #{address},
             </if>
             <if test="beginTime != null">
                 begin_time = #{beginTime},

@@ -45,6 +45,7 @@
             <el-menu-item index="/notice">公告信息</el-menu-item>
             <el-menu-item index="/workPlan">实习安排信息</el-menu-item>
             <el-menu-item index="/apply">实习报名信息</el-menu-item>
+            <el-menu-item index="/job">岗位信息</el-menu-item>
           </el-submenu>
 
           <el-submenu index="user">

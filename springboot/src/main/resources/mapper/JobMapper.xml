@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Lorrey.mapper.JobMapper">
+
+    <sql id="Base_Column_List">
+        id,name,direction,enterprise_id,count,salary,job_describe,job_require,address,work_time
+    </sql>
+
+    <select id="selectAll" resultType="com.Lorrey.entity.Job">
+        select
+        <include refid="Base_Column_List" />
+        from job
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
+            <if test="direction != null"> and direction= #{direction}</if>
+            <if test="count != null"> and count= #{count}</if>
+            <if test="salary != null"> and salary= #{salary}</if>
+            <if test="jobDescribe != null"> and job_describe= #{jobDescribe}</if>
+            <if test="jobRequire != null"> and job_require= #{jobRequire}</if>
+            <if test="address != null"> and address= #{address}</if>
+            <if test="workTime != null"> and work_time= #{workTime}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.Lorrey.entity.Job">
+        select
+        <include refid="Base_Column_List" />
+        from job
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from job
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.Lorrey.entity.Job" useGeneratedKeys="true">
+        insert into job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="name != null">name,</if>
+                <if test="direction != null">direction,</if>
+                <if test="enterpriseId != null">enterprise_id,</if>
+                <if test="count != null">count,</if>
+                <if test="salary != null">salary,</if>
+                <if test="jobDescribe != null">job_describe,</if>
+                <if test="jobRequire != null">job_require,</if>
+                <if test="address != null">address,</if>
+                <if test="workTime != null">work_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="name != null">#{name},</if>
+                <if test="direction != null">#{direction},</if>
+                <if test="enterpriseId != null">#{enterpriseId},</if>
+                <if test="count != null">#{count},</if>
+                <if test="salary != null">#{salary},</if>
+                <if test="describe != null">#{jobDescribe},</if>
+                <if test="require != null">#{jobRequire},</if>
+                <if test="address != null">#{address},</if>
+                <if test="workTime != null">#{workTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.Lorrey.entity.Job">
+        update job
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="direction != null">
+                direction = #{direction},
+            </if>
+            <if test="enterpriseId != null">
+                enterprise_id = #{enterpriseId},
+            </if>
+            <if test="count != null">
+                count = #{count},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="jobDescribe != null">
+                job_describe = #{jobDescribe},
+            </if>
+            <if test="jobRequire != null">
+                job_require = #{jobRequire},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="workTime != null">
+                work_time = #{workTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

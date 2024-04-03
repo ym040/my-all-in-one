@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
+      <el-input placeholder="请输入岗位名称查询" style="width: 200px" v-model="name"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -12,23 +12,23 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" strip @selection-change="handleSelectionChange">
+      <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
-        <el-table-column prop="username" label="用户名"></el-table-column>
-        <el-table-column prop="name" label="姓名"></el-table-column>
-        <el-table-column prop="className" label="班级"></el-table-column>
-        <el-table-column prop="phone" label="联系电话"></el-table-column>
-        <el-table-column prop="enterpriseName" label="单位名称"></el-table-column>
-        <el-table-column prop="jobName" label="岗位名称"></el-table-column>
-        <el-table-column prop="salary" label="薪资"></el-table-column>
+        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
+        <el-table-column prop="name" label="岗位名称"></el-table-column>
+        <el-table-column prop="direction" label="行业方向"></el-table-column>
+        <el-table-column prop="enterpriseName" label="单位名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="count" label="招聘人数"></el-table-column>
+        <el-table-column prop="salary" label="薪水"></el-table-column>
+        <el-table-column prop="jobDescribe" label="岗位描述" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="jobRequire" label="专业要求" show-overflow-tooltip></el-table-column>
         <el-table-column prop="address" label="工作地点"></el-table-column>
-        <el-table-column prop="beginTime" label="开始时间"></el-table-column>
-        <el-table-column prop="endTime" label="结束时间"></el-table-column>
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column prop="workTime" label="工作时间"></el-table-column>
+
+        <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="del(scope.row.id)">删除</el-button>
+            <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini">编辑</el-button>
+            <el-button plain type="danger" size="mini" @click=del(scope.row.id)>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,37 +47,36 @@
     </div>
 
 
-    <el-dialog title="学生信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
-      <el-form :model="form" label-width="100px" style="padding-right: 50px" :rules="rules" ref="formRef">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="用户名"></el-input>
+    <el-dialog title="岗位信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+      <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
+        <el-form-item label="岗位名称" prop="name">
+          <el-input v-model="form.name" placeholder="岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name" placeholder="姓名"></el-input>
-        </el-form-item>
-        <el-form-item label="班级" prop="classId">
-          <el-input v-model="form.classId" placeholder="班级"></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="form.phone" placeholder="联系电话"></el-input>
+        <el-form-item label="行业方向" prop="direction">
+          <el-input v-model="form.direction" placeholder="行业方向"></el-input>
         </el-form-item>
         <el-form-item label="单位名称" prop="enterpriseID">
           <el-input v-model="form.enterpriseID" placeholder="单位名称"></el-input>
         </el-form-item>
-        <el-form-item label="岗位名称" prop="jobID">
-          <el-input v-model="form.jobId" placeholder="岗位名称"></el-input>
+        <el-form-item label="招聘人数" prop="count">
+          <el-input v-model="form.count" placeholder="招聘人数"></el-input>
+        </el-form-item>
+        <el-form-item label="薪水" prop="salary">
+          <el-input v-model="form.salary" placeholder="薪水"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位描述" prop="jobDescribe">
+          <el-input type="textarea" :rows="5" v-model="form.jobDescribe" placeholder="岗位描述"></el-input>
+        </el-form-item>
+        <el-form-item label="专业要求" prop="jobRequire">
+          <el-input type="textarea" :rows="5" v-model="form.jobRequire" placeholder="专业要求"></el-input>
         </el-form-item>
         <el-form-item label="工作地点" prop="address">
           <el-input v-model="form.address" placeholder="工作地点"></el-input>
         </el-form-item>
-        <el-form-item label="开始时间" prop="beginTime">
-          <el-input v-model="form.beginTime" placeholder="开始时间"></el-input>
-        </el-form-item>
-        <el-form-item label="结束时间" prop="beginTime">
-          <el-input v-model="form.endTime" placeholder="结束时间"></el-input>
+        <el-form-item label="工作时间" prop="workTime">
+          <el-input v-model="form.workTime" placeholder="开始时间"></el-input>
         </el-form-item>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="fromVisible = false">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -90,21 +89,21 @@
 
 <script>
 export default {
-  name: "Apply",
+  name: "Job",
   data() {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
-      username: null,
+      name: null,
       fromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
-        username: [
-          {required: true, message: '请输入账号', trigger: 'blur'},
-        ]
+        name: [
+          {required: true, message: '请输入岗位名称', trigger: 'blur'},
+        ],
       },
       ids: []
     }
@@ -125,7 +124,7 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           this.$request({
-            url: this.form.id ? '/apply/update' : '/apply/add',
+            url: this.form.id ? '/job/update' : '/job/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {
@@ -142,7 +141,7 @@ export default {
     },
     del(id) {   // 单个删除
       this.$confirm('您确定删除吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/apply/delete/' + id).then(res => {
+        this.$request.delete('/job/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -154,7 +153,7 @@ export default {
       })
     },
     handleSelectionChange(rows) {   // 当前选中的所有的行数据
-      this.ids = rows.map(v => v.id)
+      this.ids = rows.map(v => v.id)   //  [1,2]
     },
     delBatch() {   // 批量删除
       if (!this.ids.length) {
@@ -162,7 +161,7 @@ export default {
         return
       }
       this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/apply/delete/batch', {data: this.ids}).then(res => {
+        this.$request.delete('/job/delete/batch', {data: this.ids}).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -175,11 +174,11 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/apply/selectPage', {
+      this.$request.get('/job/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          username: this.username,
+          name: this.name,
         }
       }).then(res => {
         this.tableData = res.data?.list
@@ -187,15 +186,11 @@ export default {
       })
     },
     reset() {
-      this.username = null
+      this.name = null
       this.load(1)
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum)
-    },
-    handleAvatarSuccess(response, file, fileList) {
-      // 把头像属性换成上传的图片的链接
-      this.form.avatar = response.data
     },
   }
 }
