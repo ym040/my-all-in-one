@@ -15,8 +15,10 @@
       <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
-        <el-table-column prop="name" label="学院名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="content" label="学院描述" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="专业名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="content" label="专业描述" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="collegeName" label="所属学院" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="score" label="学分限定" show-overflow-tooltip></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
@@ -40,13 +42,21 @@
     </div>
 
 
-    <el-dialog title="学院信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+    <el-dialog title="专业信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
-        <el-form-item prop="name" label="学院名称">
+        <el-form-item prop="name" label="专业名称">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item prop="content" label="学院描述">
+        <el-form-item prop="content" label="专业描述">
           <el-input type="textarea" :rows="5" v-model="form.content" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item prop="score" label="学分限定">
+          <el-input v-model="form.score" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item prop="collegeId" label="所属学院">
+          <el-select v-model="form.collegeId" placeholder="请选择学院" style="width: 100%">
+            <el-option v-for="item in collegeData" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -61,7 +71,7 @@
 
 <script>
 export default {
-  name: "College",
+  name: "Speciality",
   data() {
     return {
       tableData: [],  // 所有的数据
@@ -74,16 +84,27 @@ export default {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         name: [
-          {required: true, message: '请输入学院名称', trigger: 'blur'},
+          {required: true, message: '请输入专业名称', trigger: 'blur'},
         ],
       },
-      ids: []
+      ids: [],
+      collegeData: []
     }
   },
   created() {
     this.load(1)
+    this.loadCollege()
   },
   methods: {
+    loadCollege() {
+      this.$request.get('/college/selectAll').then(res => {
+        if (res.code === '200') {
+          this.collegeData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
       this.fromVisible = true   // 打开弹窗
@@ -96,7 +117,7 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           this.$request({
-            url: this.form.id ? '/college/update' : '/college/add',
+            url: this.form.id ? '/speciality/update' : '/speciality/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {
@@ -113,7 +134,7 @@ export default {
     },
     del(id) {   // 单个删除
       this.$confirm('您确定删除吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/college/delete/' + id).then(res => {
+        this.$request.delete('/speciality/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -133,7 +154,7 @@ export default {
         return
       }
       this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/college/delete/batch', {data: this.ids}).then(res => {
+        this.$request.delete('/speciality/delete/batch', {data: this.ids}).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -146,7 +167,7 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/college/selectPage', {
+      this.$request.get('/speciality/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,

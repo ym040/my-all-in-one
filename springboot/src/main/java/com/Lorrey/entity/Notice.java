@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 公告信息表
+ * 公告
 */
 @Data
 public class Notice implements Serializable {

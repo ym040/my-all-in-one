@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 学院信息表
+ * 学院
 */
 @Data
 public class College implements Serializable {

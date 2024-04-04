@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 实习安排表
+ * 实习安排
 */
 @Data
 public class Workplan implements Serializable {

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 岗位信息
+ * 岗位
 */
 @Data
 @AllArgsConstructor
