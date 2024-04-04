@@ -9,9 +9,11 @@
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Apply">
-        select
-        <include refid="Base_Column_List" />
+        select apply.*, classes.name as className, enterprise.name as enterpriseName, job.name as jobName
         from apply
+        left join classes on apply.class_id = classes.id
+        left join enterprise on apply.enterprise_id = enterprise.id
+        left join job on apply.job_id = job.id
         <where>
             <if test="id != null"> and id= #{id}</if>
             <if test="username != null"> and username like concat('%', #{username}, '%')</if>

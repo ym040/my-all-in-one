@@ -27,7 +27,7 @@ public class Apply implements Serializable {
     private String phone;
     /** 企业ID */
     private Integer enterpriseId;
-    /** 岗位 */
+    /** 岗位ID */
     private Integer jobId;
     /** 薪资 */
     private String salary;

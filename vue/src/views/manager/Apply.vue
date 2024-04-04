@@ -56,25 +56,50 @@
           <el-input v-model="form.name" placeholder="姓名"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="classId">
-          <el-input v-model="form.classId" placeholder="班级"></el-input>
+          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
+            <el-option v-for="item in classData" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="form.phone" placeholder="联系电话"></el-input>
         </el-form-item>
-        <el-form-item label="单位名称" prop="enterpriseID">
-          <el-input v-model="form.enterpriseID" placeholder="单位名称"></el-input>
+        <el-form-item label="单位名称" prop="enterpriseId">
+          <el-select v-model="form.enterpriseId" placeholder="请选择单位" style="width: 100%">
+            <el-option v-for="item in enterpriseData" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="岗位名称" prop="jobID">
-          <el-input v-model="form.jobId" placeholder="岗位名称"></el-input>
+        <el-form-item label="岗位名称" prop="jobId">
+          <el-select v-model="form.jobId" placeholder="请选择岗位" style="width: 100%">
+            <el-option v-for="item in jobData" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="薪资" prop="salary">
+          <el-input v-model="form.salary" placeholder="薪资"></el-input>
         </el-form-item>
         <el-form-item label="工作地点" prop="address">
           <el-input v-model="form.address" placeholder="工作地点"></el-input>
         </el-form-item>
         <el-form-item label="开始时间" prop="beginTime">
-          <el-input v-model="form.beginTime" placeholder="开始时间"></el-input>
+          <div class="block">
+            <el-date-picker
+                v-model="form.beginTime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="开始时间"
+                :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
         </el-form-item>
-        <el-form-item label="结束时间" prop="beginTime">
-          <el-input v-model="form.endTime" placeholder="结束时间"></el-input>
+        <el-form-item label="结束时间" prop="endTime">
+          <div class="block">
+            <el-date-picker
+                v-model="form.endTime"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="结束时间"
+                :picker-options="pickerOptions">
+            </el-date-picker>
+          </div>
         </el-form-item>
       </el-form>
 
@@ -106,13 +131,52 @@ export default {
           {required: true, message: '请输入账号', trigger: 'blur'},
         ]
       },
-      ids: []
+      ids: [],
+      classData: [],
+      enterpriseData: [],
+      jobData: [],
+      timeDate: "",
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7; //只能选择今天及今天之后的日期
+        }
+      },
     }
   },
   created() {
     this.load(1)
+    this.loadClasses()
+    this.loadEnterprise()
+    this.loadJob()
   },
   methods: {
+    loadClasses() {
+      this.$request.get('/classes/selectAll').then(res => {
+        if (res.code ==='200') {
+          this.classData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadEnterprise() {
+      this.$request.get('/enterprise/selectAll').then(res => {
+        if (res.code ==='200') {
+          this.enterpriseData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadJob() {
+      this.$request.get('/job/selectAll').then(res => {
+        if (res.code ==='200') {
+          this.jobData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
       this.fromVisible = true   // 打开弹窗

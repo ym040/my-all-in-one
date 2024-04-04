@@ -55,8 +55,10 @@
         <el-form-item label="行业方向" prop="direction">
           <el-input v-model="form.direction" placeholder="行业方向"></el-input>
         </el-form-item>
-        <el-form-item label="单位名称" prop="enterpriseID">
-          <el-input v-model="form.enterpriseID" placeholder="单位名称"></el-input>
+        <el-form-item label="单位名称" prop="enterpriseId">
+          <el-select v-model="form.enterpriseId" placeholder="请选择单位" style="width: 100%">
+            <el-option v-for="item in enterpriseData" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="招聘人数" prop="count">
           <el-input v-model="form.count" placeholder="招聘人数"></el-input>
@@ -105,13 +107,24 @@ export default {
           {required: true, message: '请输入岗位名称', trigger: 'blur'},
         ],
       },
-      ids: []
+      ids: [],
+      enterpriseData: []
     }
   },
   created() {
     this.load(1)
+    this.loadEnterprise()
   },
   methods: {
+    loadEnterprise() {
+      this.$request.get('/enterprise/selectAll').then(res => {
+        if (res.code ==='200') {
+          this.enterpriseData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
       this.fromVisible = true   // 打开弹窗

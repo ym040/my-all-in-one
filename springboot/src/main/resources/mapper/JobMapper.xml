@@ -9,9 +9,9 @@
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Job">
-        select
-        <include refid="Base_Column_List" />
+        select job.*, enterprise.name as enterpriseName
         from job
+        left join enterprise on job.enterprise_id = enterprise.id
         <where>
             <if test="id != null"> and id= #{id}</if>
             <if test="name != null"> and name like concat('%', #{name}, '%')</if>
