@@ -34,6 +34,7 @@ const routes = [
       { path: 'teacher', name: 'Teacher', meta: { name: '教师信息' }, component: () => import('../views/manager/Teacher') },
       { path: 'student', name: 'Student', meta: { name: '学生信息' }, component: () => import('../views/manager/Student') },
       { path: 'enterprise', name: 'Enterprise', meta: { name: '企业信息' }, component: () => import('../views/manager/Enterprise') },
+      { path: 'task', name: 'Task', meta: { name: '实习任务' }, component: () => import('../views/manager/Task') },
     ]
   },
   {

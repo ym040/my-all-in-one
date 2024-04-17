@@ -49,15 +49,21 @@
           </el-submenu>
           <el-submenu index="administration">
             <template slot="title">
-              <i class="el-icon-menu"></i><span>行政管理</span>
+              <i class="el-icon-s-check"></i><span>行政管理</span>
             </template>
             <el-menu-item index="/college">学院信息</el-menu-item>
             <el-menu-item index="/speciality">专业信息</el-menu-item>
             <el-menu-item index="/classes">班级信息</el-menu-item>
           </el-submenu>
+          <el-submenu index="practice">
+            <template slot="title">
+              <i class="el-icon-s-promotion"></i><span>实习管理</span>
+            </template>
+            <el-menu-item index="/task">实习任务</el-menu-item>
+          </el-submenu>
           <el-submenu index="user">
             <template slot="title">
-              <i class="el-icon-menu"></i><span>用户管理</span>
+              <i class="el-icon-user-solid"></i><span>用户管理</span>
             </template>
             <el-menu-item index="/admin">管理员信息</el-menu-item>
             <el-menu-item index="/teacher">教师信息</el-menu-item>
