@@ -26,7 +26,6 @@ const routes = [
       { path: 'password', name: 'Password', meta: { name: '修改密码' }, component: () => import('../views/manager/Password') },
       { path: 'notice', name: 'Notice', meta: { name: '公告信息' }, component: () => import('../views/manager/Notice') },
       { path: 'workPlan', name: 'WorkPlan', meta: { name: '实习安排信息' }, component: () => import('../views/manager/WorkPlan') },
-      { path: 'apply', name: 'Apply', meta: { name: '实习报名信息' }, component: () => import('../views/manager/Apply') },
       { path: 'job', name: 'Job', meta: { name: '岗位信息' }, component: () => import('../views/manager/Job') },
       { path: 'college', name: 'College', meta: { name: '学院信息' }, component: () => import('../views/manager/College') },
       { path: 'speciality', name: 'Speciality', meta: { name: '专业信息' }, component: () => import('../views/manager/Speciality') },
@@ -34,7 +33,9 @@ const routes = [
       { path: 'teacher', name: 'Teacher', meta: { name: '教师信息' }, component: () => import('../views/manager/Teacher') },
       { path: 'student', name: 'Student', meta: { name: '学生信息' }, component: () => import('../views/manager/Student') },
       { path: 'enterprise', name: 'Enterprise', meta: { name: '企业信息' }, component: () => import('../views/manager/Enterprise') },
+      { path: 'apply', name: 'Apply', meta: { name: '实习申请' }, component: () => import('../views/manager/Apply') },
       { path: 'task', name: 'Task', meta: { name: '实习任务' }, component: () => import('../views/manager/Task') },
+      { path: 'score', name: 'Score', meta: { name: '实习成绩' }, component: () => import('../views/manager/Score') },
     ]
   },
   {

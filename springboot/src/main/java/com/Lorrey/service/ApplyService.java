@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 实习报名信息业务处理
+ * 实习申请信息业务处理
  **/
 @Service
 public class ApplyService {

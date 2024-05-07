@@ -1,8 +1,10 @@
 package com.Lorrey.controller;
 
 import com.Lorrey.common.Result;
-import com.Lorrey.entity.Apply;
-import com.Lorrey.service.ApplyService;
+import com.Lorrey.entity.Notice;
+import com.Lorrey.entity.Score;
+import com.Lorrey.service.NoticeService;
+import com.Lorrey.service.ScoreService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,21 +12,21 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 实习申请信息前端操作接口
+ * 成绩表前端操作接口
  **/
 @RestController
-@RequestMapping("/apply")
-public class ApplyController {
+@RequestMapping("/score")
+public class ScoreController {
 
     @Resource
-    private ApplyService applyService;
+    private ScoreService scoreService;
 
     /**
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Apply apply) {
-        applyService.add(apply);
+    public Result add(@RequestBody Score score) {
+        scoreService.add(score);
         return Result.success();
     }
 
@@ -33,7 +35,7 @@ public class ApplyController {
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
-        applyService.deleteById(id);
+        scoreService.deleteById(id);
         return Result.success();
     }
 
@@ -42,7 +44,7 @@ public class ApplyController {
      */
     @DeleteMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
-        applyService.deleteBatch(ids);
+        scoreService.deleteBatch(ids);
         return Result.success();
     }
 
@@ -50,8 +52,8 @@ public class ApplyController {
      * 修改
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody Apply apply) {
-        applyService.updateById(apply);
+    public Result updateById(@RequestBody Score score) {
+        scoreService.updateById(score);
         return Result.success();
     }
 
@@ -60,16 +62,16 @@ public class ApplyController {
      */
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
-        Apply apply = applyService.selectById(id);
-        return Result.success(apply);
+        Score score = scoreService.selectById(id);
+        return Result.success(score);
     }
 
     /**
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll(Apply apply ) {
-        List<Apply> list = applyService.selectAll(apply);
+    public Result selectAll(Score score ) {
+        List<Score> list = scoreService.selectAll(score);
         return Result.success(list);
     }
 
@@ -77,10 +79,10 @@ public class ApplyController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage(Apply apply,
+    public Result selectPage(Score score,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Apply> page = applyService.selectPage(apply, pageNum, pageSize);
+        PageInfo<Score> page = scoreService.selectPage(score, pageNum, pageSize);
         return Result.success(page);
     }
 

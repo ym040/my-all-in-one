@@ -44,7 +44,6 @@
             </template>
             <el-menu-item index="/notice">公告信息</el-menu-item>
             <el-menu-item index="/workPlan">实习安排信息</el-menu-item>
-            <el-menu-item index="/apply">实习报名信息</el-menu-item>
             <el-menu-item index="/job">岗位信息</el-menu-item>
           </el-submenu>
           <el-submenu index="administration">
@@ -59,7 +58,9 @@
             <template slot="title">
               <i class="el-icon-s-promotion"></i><span>实习管理</span>
             </template>
+            <el-menu-item index="/apply">实习申请</el-menu-item>
             <el-menu-item index="/task">实习任务</el-menu-item>
+            <el-menu-item index="/score">实习成绩</el-menu-item>
           </el-submenu>
           <el-submenu index="user">
             <template slot="title">

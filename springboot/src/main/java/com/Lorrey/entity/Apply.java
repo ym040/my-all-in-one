@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 实习报名信息
+ * 实习申请信息
 */
 @Data
 @AllArgsConstructor
