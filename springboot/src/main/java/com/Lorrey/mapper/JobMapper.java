@@ -34,4 +34,8 @@ public interface JobMapper {
     */
     List<Job> selectAll(Job job);
 
+    /**
+     * 根据企业查询
+     */
+    List<Job> selectByEnterpriseId(Integer enterpriseId);
 }

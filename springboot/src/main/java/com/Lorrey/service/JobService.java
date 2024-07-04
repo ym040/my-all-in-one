@@ -71,4 +71,10 @@ public class JobService {
         return PageInfo.of(list);
     }
 
+    /**
+     * 根据企业查询
+     */
+    public List<Job> selectByEnterpriseId(Integer enterpriseId) {
+        return jobMapper.selectByEnterpriseId(enterpriseId);
+    }
 }

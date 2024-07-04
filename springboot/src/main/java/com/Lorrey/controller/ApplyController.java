@@ -2,6 +2,7 @@ package com.Lorrey.controller;
 
 import com.Lorrey.common.Result;
 import com.Lorrey.entity.Apply;
+import com.Lorrey.entity.Student;
 import com.Lorrey.service.ApplyService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;

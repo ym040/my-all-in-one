@@ -29,8 +29,6 @@ public class Student extends Account implements Serializable {
     private Integer specialityId;
     /** 班级ID */
     private Integer classId;
-    /** 实习成绩 */
-    private Integer score;
 
     /* 关联ID */
     private String collegeName;

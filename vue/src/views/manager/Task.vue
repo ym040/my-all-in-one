@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="operation">
-      <el-button type="primary" plain @click="handleAdd" v-if="user.role !== 'STUDENT'">新增</el-button>
-      <el-button type="danger" plain @click="delBatch" v-if="user.role !== 'STUDENT'">批量删除</el-button>
+      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN'">新增</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
     </div>
 
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
@@ -21,10 +21,10 @@
         <el-table-column prop="report" label="实践报告"></el-table-column>
         <el-table-column prop="self" label="自我鉴定"></el-table-column>
         <el-table-column prop="grade" label="成绩鉴定"></el-table-column>
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column label="操作" align="center" width="180" v-if="user.role === 'ADMIN'">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role !== 'STUDENT'">删除</el-button>
+            <el-button size="mini" type="danger" plain @click="del(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

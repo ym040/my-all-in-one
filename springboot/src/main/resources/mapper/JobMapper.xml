@@ -33,6 +33,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectByEnterpriseId" resultType="com.Lorrey.entity.Job">
+        select
+        <include refid="Base_Column_List" />
+        from job
+        where enterprise_id = #{enterpriseId}
+    </select>
+
     <delete id="deleteById">
         delete from job
         where  id = #{id}

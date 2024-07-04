@@ -29,7 +29,6 @@
         <el-table-column prop="collegeName" label="学院"></el-table-column>
         <el-table-column prop="specialityName" label="专业"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
-        <el-table-column prop="score" label="学分"></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>

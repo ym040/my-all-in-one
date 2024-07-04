@@ -1,19 +1,19 @@
 <template>
   <div>
-    <div class="search">
-      <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
+    <div class="search" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">
+      <el-input placeholder="请输入账号查询" style="width: 200px" ></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
 
     <div class="operation">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">批量删除</el-button>
+      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">新增</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
     </div>
 
     <div class="table">
       <el-table :data="tableData" strip @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
@@ -38,8 +38,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
-            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="del(scope.row.id)">删除</el-button>
+            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">编辑</el-button>
+            <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,13 +61,13 @@
     <el-dialog title="实习信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form :model="form" label-width="100px" style="padding-right: 50px" :rules="rules" ref="formRef">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="用户名"></el-input>
+          <el-input v-model="form.username" placeholder="用户名" :disabled="user.role === 'STUDENT'"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name" placeholder="姓名"></el-input>
+          <el-input v-model="form.name" placeholder="姓名" :disabled="user.role === 'STUDENT'"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="classId">
-          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
+          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%" :disabled="user.role === 'STUDENT'">
             <el-option v-for="item in classData" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -75,8 +75,8 @@
           <el-input v-model="form.phone" placeholder="联系电话"></el-input>
         </el-form-item>
         <el-form-item label="单位名称" prop="enterpriseId">
-          <el-select v-model="form.enterpriseId" placeholder="请选择单位" style="width: 100%">
-            <el-option v-for="item in enterpriseData" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="form.enterpriseId" placeholder="请选择单位" style="width: 100%" @change="loadJobByEnterpriseId">
+            <el-option v-for="item in enterpriseData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="岗位名称" prop="jobId">
@@ -196,8 +196,22 @@ export default {
         }
       })
     },
+    loadJobByEnterpriseId(enterpriseId) {
+      this.$request.get(`/job/selectByEnterpriseId/${enterpriseId}`).then(res => {
+        if (res.code === '200') {
+          this.jobData = res.data;
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
+      if (this.user.role === 'STUDENT') {
+        this.form.username = this.user.username;
+        this.form.classId = this.user.classId;
+        this.form.name = this.user.name;
+      }
       this.fromVisible = true   // 打开弹窗
     },
     handleEdit(row) {   // 编辑数据

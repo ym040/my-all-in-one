@@ -74,6 +74,15 @@ public class JobController {
     }
 
     /**
+     * 根据企业查询
+     */
+    @GetMapping("/selectByEnterpriseId/{enterpriseId}")
+    public Result selectByEnterpriseId(@PathVariable Integer enterpriseId) {
+        List<Job> list = jobService.selectByEnterpriseId(enterpriseId);
+        return Result.success(list);
+    }
+
+    /**
      * 分页查询
      */
     @GetMapping("/selectPage")
