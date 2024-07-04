@@ -5,7 +5,7 @@
 <mapper namespace="com.Lorrey.mapper.StudentMapper">
 
     <sql id="Base_Column_List">
-        id,username,password,name,avatar,role,college_id,speciality_id,class_id,score
+        id,username,password,name,avatar,role,college_id,speciality_id,class_id
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Student">
@@ -48,7 +48,6 @@
                 <if test="collegeId != null">college_id,</if>
                 <if test="specialityId != null">speciality_id,</if>
                 <if test="classId != null">class_id,</if>
-                <if test="score != null">score,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -60,7 +59,6 @@
                 <if test="collegeId != null">#{collegeId},</if>
                 <if test="specialityId != null">#{specialityId},</if>
                 <if test="classId != null">#{classId},</if>
-                <if test="score != null">#{score},</if>
         </trim>
     </insert>
 
@@ -90,9 +88,6 @@
             </if>
             <if test="classId != null">
                 class_id = #{classId},
-            </if>
-            <if test="score != null">
-                score = #{score},
             </if>
         </set>
         where id = #{id}
