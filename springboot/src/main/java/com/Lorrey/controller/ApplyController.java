@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.Lorrey.common.enums.ResultCodeEnum.PARAM_ERROR;
+
 /**
  * 实习申请信息前端操作接口
  **/
@@ -65,6 +67,15 @@ public class ApplyController {
     }
 
     /**
+     * 根据用户名查找
+     */
+    @GetMapping("/selectByUsername/{username}")
+    public Result selectByUsername(@PathVariable String username) {
+        Apply apply = applyService.selectByUsername(username);
+        return Result.success(apply);
+    }
+
+    /**
      * 查询所有
      */
     @GetMapping("/selectAll")
@@ -82,6 +93,18 @@ public class ApplyController {
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Apply> page = applyService.selectPage(apply, pageNum, pageSize);
         return Result.success(page);
+    }
+
+    /**
+     * 更新状态
+     */
+    @PutMapping("/updateStatus")
+    public Result updateStatus(@RequestBody Apply apply) {
+        if (apply.getId() == null || apply.getStatus() == null) {
+            return Result.error(PARAM_ERROR);
+        }
+        applyService.updateStatus(apply);
+        return Result.success();
     }
 
 }

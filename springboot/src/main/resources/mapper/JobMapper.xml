@@ -59,8 +59,8 @@
                 <if test="enterpriseId != null">#{enterpriseId},</if>
                 <if test="count != null">#{count},</if>
                 <if test="salary != null">#{salary},</if>
-                <if test="describe != null">#{jobDescribe},</if>
-                <if test="require != null">#{jobRequire},</if>
+                <if test="jobDescribe != null">#{jobDescribe},</if>
+                <if test="jobRequire != null">#{jobRequire},</if>
                 <if test="address != null">#{address},</if>
                 <if test="workTime != null">#{workTime},</if>
         </trim>

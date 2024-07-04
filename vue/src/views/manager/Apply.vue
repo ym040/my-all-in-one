@@ -8,7 +8,7 @@
 
     <div class="operation">
       <el-button type="primary" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">批量删除</el-button>
     </div>
 
     <div class="table">
@@ -25,6 +25,17 @@
         <el-table-column prop="address" label="工作地点"></el-table-column>
         <el-table-column prop="beginTime" label="开始时间"></el-table-column>
         <el-table-column prop="endTime" label="结束时间"></el-table-column>
+        <el-table-column label="实习状态" align="center">
+          <template v-slot="scope">
+            <el-switch
+                v-model="scope.row.status"
+                active-value="实习中"
+                inactive-value="未实习"
+                :disabled="user.role === 'STUDENT'"
+                @change="handleStatusChange(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
@@ -100,6 +111,14 @@
                 :picker-options="pickerOptions">
             </el-date-picker>
           </div>
+        </el-form-item>
+        <el-form-item label="实习状态" prop="status">
+          <el-switch
+              v-model="form.status"
+              active-value="实习中"
+              inactive-value="未实习"
+              :disabled="user.role === 'STUDENT'"
+          ></el-switch>
         </el-form-item>
       </el-form>
 
@@ -260,6 +279,23 @@ export default {
     handleAvatarSuccess(response, file, fileList) {
       // 把头像属性换成上传的图片的链接
       this.form.avatar = response.data
+    },
+    handleStatusChange(row) {
+      this.$request({
+        url: '/apply/updateStatus',
+        method: 'PUT',
+        data: { id: row.id, status: row.status }
+      }).then(res => {
+        if (res.code === '200') {
+          if (row.status === '实习中') {
+            this.$message.success(`状态更新成功，当前状态：${row.status}`);
+          } else {
+            this.$message.error(`状态更新成功，当前状态：${row.status}`);
+          }
+        } else {
+          this.$message.error(res.msg);
+        }
+      })
     },
   }
 }

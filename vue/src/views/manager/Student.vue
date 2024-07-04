@@ -72,18 +72,18 @@
           <el-input v-model="form.name" placeholder="姓名"></el-input>
         </el-form-item>
         <el-form-item label="学院" prop="collegeId">
-          <el-select v-model="form.collegeId" placeholder="请选择学院" style="width: 100%">
-            <el-option v-for="item in collegeData" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="form.collegeId" placeholder="请选择学院" style="width: 100%" @change="handleCollegeChange">
+            <el-option v-for="item in collegeData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="专业" prop="specialityId">
-          <el-select v-model="form.specialityId" placeholder="请选择专业" style="width: 100%">
-            <el-option v-for="item in specialityData" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="form.specialityId" placeholder="请选择专业" style="width: 100%" @change="handleSpecialityChange">
+            <el-option v-for="item in specialityData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="classId">
           <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
-            <el-option v-for="item in classData" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in classData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -125,44 +125,61 @@ export default {
   created() {
     this.load(1)
     this.loadCollege()
-    this.loadSpeciality()
-    this.loadClasses()
   },
   methods: {
     loadCollege() {
       this.$request.get('/college/selectAll').then(res => {
-        if (res.code ==='200') {
-          this.collegeData = res.data
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    },
-    loadSpeciality() {
-      this.$request.get('/speciality/selectAll').then(res => {
         if (res.code === '200') {
-          this.specialityData = res.data
+          this.collegeData = res.data;
         } else {
-          this.$message.error(res.data)
+          this.$message.error(res.msg);
         }
-      })
+      });
     },
-    loadClasses() {
-      this.$request.get('/classes/selectAll').then(res => {
+    loadSpeciality(collegeId) {
+      return this.$request.get(`/speciality/selectByCollegeId/${collegeId}`).then(res => {
         if (res.code === '200') {
-          this.classData = res.data
+          this.specialityData = res.data; // 确保这里接收的是列表
+          this.classData = []; // 清空班级数据
+          this.form.specialityId = null; // 清空选中的专业
+          this.form.classId = null; // 清空选中的班级
         } else {
-          this.$message.error(res.data)
+          this.$message.error(res.msg);
         }
-      })
+      });
     },
-    handleAdd() {   // 新增数据
-      this.form = {}  // 新增数据的时候清空数据
-      this.fromVisible = true   // 打开弹窗
+    loadClasses(specialityId) {
+      return this.$request.get(`/classes/selectBySpecialityId/${specialityId}`).then(res => {
+        if (res.code === '200') {
+          this.classData = res.data; // 确保这里接收的是列表
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
     },
-    handleEdit(row) {   // 编辑数据
-      this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
-      this.fromVisible = true   // 打开弹窗
+    handleAdd() {
+      this.form = {};  // 新增数据的时候清空数据
+      this.fromVisible = true;   // 打开弹窗
+      this.loadCollege();  // 加载学院数据
+    },
+    handleEdit(row) {
+      this.form = JSON.parse(JSON.stringify(row));  // 深拷贝数据
+      this.fromVisible = true;   // 打开弹窗
+
+      // 加载学院的专业
+      this.loadSpeciality(row.collegeId).then(() => {
+        this.form.specialityId = row.specialityId;  // 设置专业
+        // 在专业加载完成后加载班级
+        this.loadClasses(row.specialityId).then(() => {
+          this.form.classId = row.classId;  // 设置班级
+        });
+      });
+    },
+    handleCollegeChange(collegeId) {
+      this.loadSpeciality(collegeId); // 加载新的专业
+    },
+    handleSpecialityChange(specialityId) {
+      this.loadClasses(specialityId); // 加载新的班级
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {

@@ -76,6 +76,11 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="邮箱"></el-input>
         </el-form-item>
+        <el-form-item label="角色" prop="role">
+          <el-select v-model="form.role" placeholder="请选择角色">
+            <el-option label="教师" value="TEACHER"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="职称" prop="title">
           <el-input v-model="form.title" placeholder="职称"></el-input>
         </el-form-item>
@@ -102,7 +107,9 @@ export default {
       total: 0,
       username: null,
       fromVisible: false,
-      form: {},
+      form: {
+        role: 'TEACHER'
+      },
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         username: [

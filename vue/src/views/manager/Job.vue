@@ -7,8 +7,8 @@
     </div>
 
     <div class="operation">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN'">新增</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
     </div>
 
     <div class="table">
@@ -25,7 +25,7 @@
         <el-table-column prop="address" label="工作地点"></el-table-column>
         <el-table-column prop="workTime" label="工作时间"></el-table-column>
 
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">
           <template v-slot="scope">
             <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini">编辑</el-button>
             <el-button plain type="danger" size="mini" @click=del(scope.row.id)>删除</el-button>
@@ -100,7 +100,9 @@ export default {
       total: 0,
       name: null,
       fromVisible: false,
-      form: {},
+      form: {
+        alCount: 0
+      },
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         name: [

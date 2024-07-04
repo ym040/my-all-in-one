@@ -71,4 +71,10 @@ public class ClassesService {
         return PageInfo.of(list);
     }
 
+    /**
+     * 根据专业ID查询
+     */
+    public List<Classes> selectBySpecialityId(Integer specialityId) {
+        return classesMapper.selectBySpecialityId(specialityId);
+    }
 }

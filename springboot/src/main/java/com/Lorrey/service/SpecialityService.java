@@ -71,4 +71,12 @@ public class SpecialityService {
         return PageInfo.of(list);
     }
 
+
+
+    /**
+     * 根据学院ID查询
+     */
+    public List<Speciality> selectByCollegeId(Integer collegeId) {
+        return specialityMapper.selectByCollegeId(collegeId);
+    }
 }

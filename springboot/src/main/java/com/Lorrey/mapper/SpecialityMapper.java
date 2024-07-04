@@ -34,4 +34,8 @@ public interface SpecialityMapper {
      */
     List<Speciality> selectAll(Speciality speciality);
 
+    /**
+     * 根据学院ID查询
+     */
+    List<Speciality> selectByCollegeId(Integer collegeId);
 }

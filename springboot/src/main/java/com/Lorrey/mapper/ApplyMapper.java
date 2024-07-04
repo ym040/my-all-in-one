@@ -35,6 +35,14 @@ public interface ApplyMapper {
     */
     List<Apply> selectAll(Apply apply);
 
+    /**
+     * 根据用户名查找
+     */
     @Select("select * from apply where username = #{username}")
     Apply selectByUsername(String name);
+
+    /**
+     * 更新状态
+     */
+    void updateStatus(Apply apply);
 }

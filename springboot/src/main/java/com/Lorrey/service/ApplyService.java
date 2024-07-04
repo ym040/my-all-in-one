@@ -77,5 +77,19 @@ public class ApplyService {
         List<Apply> list = applyMapper.selectAll(apply);
         return PageInfo.of(list);
     }
+
+    /**
+     * 更新状态
+     */
+    public void updateStatus(Apply apply) {
+        applyMapper.updateStatus(apply);
+    }
+
+    /**
+     * 根据用户名查找
+     */
+    public Apply selectByUsername(String username) {
+        return (applyMapper.selectByUsername(username));
+    }
 }
 

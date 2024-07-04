@@ -65,6 +65,15 @@ public class ClassesController {
     }
 
     /**
+     * 根据专业ID查询班级列表
+     */
+    @GetMapping("/selectBySpecialityId/{specialityId}")
+    public Result selectBySpecialityId(@PathVariable Integer specialityId) {
+        List<Classes> classesList = classesService.selectBySpecialityId(specialityId);
+        return Result.success(classesList);
+    }
+
+    /**
      * 查询所有
      */
     @GetMapping("/selectAll")

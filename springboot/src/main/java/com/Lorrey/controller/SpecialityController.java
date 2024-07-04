@@ -65,6 +65,15 @@ public class SpecialityController {
     }
 
     /**
+     * 根据学院ID查询专业列表
+     */
+    @GetMapping("/selectByCollegeId/{collegeId}")
+    public Result selectByCollegeId(@PathVariable Integer collegeId) {
+        List<Speciality> specialities = specialityService.selectByCollegeId(collegeId);
+        return Result.success(specialities);
+    }
+
+    /**
      * 查询所有
      */
     @GetMapping("/selectAll")

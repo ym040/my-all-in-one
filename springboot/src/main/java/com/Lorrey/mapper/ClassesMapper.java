@@ -32,4 +32,10 @@ public interface ClassesMapper {
       * 查询所有
     */
     List<Classes> selectAll(Classes classes);
+
+    /**
+     * 根据专业ID查询
+     */
+    List<Classes> selectBySpecialityId(Integer specialityId);
+
 }

@@ -26,6 +26,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectByCollegeId" resultType="com.Lorrey.entity.Speciality">
+        select
+        <include refid="Base_Column_List" />
+        from speciality
+        where college_id = #{collegeId}
+    </select>
+
     <delete id="deleteById">
         delete from speciality
         where  id = #{id}
