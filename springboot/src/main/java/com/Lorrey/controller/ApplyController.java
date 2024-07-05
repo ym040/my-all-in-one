@@ -68,6 +68,15 @@ public class ApplyController {
     }
 
     /**
+     * 根据学生ID查询
+     */
+    @GetMapping("/selectByStuId")
+    public Result selectByStuId(@RequestParam Integer stuId) {
+        Apply apply = applyService.selectByStuId(stuId);
+        return Result.success(apply);
+    }
+
+    /**
      * 根据用户名查找
      */
     @GetMapping("/selectByUsername/{username}")

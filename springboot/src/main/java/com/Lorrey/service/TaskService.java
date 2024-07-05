@@ -70,5 +70,12 @@ public class TaskService {
         List<Task> list = taskMapper.selectAll(task);
         return PageInfo.of(list);
     }
+
+    /**
+     * 批量新增
+     */
+    public void batchAdd(List<Task> tasks) {
+        taskMapper.batchAdd(tasks);
+    }
 }
 

@@ -45,4 +45,9 @@ public interface ApplyMapper {
      * 更新状态
      */
     void updateStatus(Apply apply);
+
+    /**
+     * 根据学生ID查询
+     */
+    Apply selectByStuId(Integer stuId);
 }

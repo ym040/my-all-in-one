@@ -89,7 +89,14 @@ public class ApplyService {
      * 根据用户名查找
      */
     public Apply selectByUsername(String username) {
-        return (applyMapper.selectByUsername(username));
+        return applyMapper.selectByUsername(username);
+    }
+
+    /**
+     * 根据学生ID查询
+     */
+    public Apply selectByStuId(Integer stuId) {
+        return applyMapper.selectByStuId(stuId);
     }
 }
 

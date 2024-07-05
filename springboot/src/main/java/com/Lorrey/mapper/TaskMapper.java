@@ -34,4 +34,8 @@ public interface TaskMapper {
     */
     List<Task> selectAll(Task task);
 
+    /**
+     * 批量新增
+     */
+    void batchAdd(List<Task> tasks);
 }

@@ -78,6 +78,14 @@
         </trim>
     </insert>
 
+    <insert id="batchAdd" parameterType="java.util.List">
+        INSERT INTO task (student_id, class_id, teacher_id)
+        VALUES
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.studentId}, #{item.classId}, #{item.teacherId})
+        </foreach>
+    </insert>
+
     <update id="updateById" parameterType="com.Lorrey.entity.Task">
         update task
         <set>

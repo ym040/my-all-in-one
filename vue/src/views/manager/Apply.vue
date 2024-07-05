@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">
-      <el-input placeholder="请输入账号查询" style="width: 200px" ></el-input>
+      <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -12,9 +12,10 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" strip @selection-change="handleSelectionChange">
+      <el-table :data="user.role === 'STUDENT' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
+        <el-table-column prop="stuId" label="学生ID"></el-table-column>
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
@@ -60,6 +61,9 @@
 
     <el-dialog title="实习信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form :model="form" label-width="100px" style="padding-right: 50px" :rules="rules" ref="formRef">
+        <el-form-item label="学生ID" prop="stuId">
+          <el-input v-model="form.stuId" placeholder="学生ID" :disabled="user.role === 'STUDENT'"></el-input>
+        </el-form-item>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" placeholder="用户名" :disabled="user.role === 'STUDENT'"></el-input>
         </el-form-item>
@@ -138,6 +142,7 @@ export default {
   data() {
     return {
       tableData: [],  // 所有的数据
+      selfData: [],   // 自己的数据
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
@@ -163,10 +168,14 @@ export default {
     }
   },
   created() {
-    this.load(1)
-    this.loadClasses()
-    this.loadEnterprise()
-    this.loadJob()
+    if (this.user.role === 'STUDENT') {
+      this.loadSelfData();
+    } else {
+      this.load(1);
+    }
+    this.loadClasses();
+    this.loadEnterprise();
+    this.loadJob();
   },
   methods: {
     loadClasses() {
@@ -208,6 +217,7 @@ export default {
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
       if (this.user.role === 'STUDENT') {
+        this.form.stuId = this.user.id;
         this.form.username = this.user.username;
         this.form.classId = this.user.classId;
         this.form.name = this.user.name;
@@ -228,7 +238,11 @@ export default {
           }).then(res => {
             if (res.code === '200') {  // 表示成功保存
               this.$message.success('保存成功')
-              this.load(1)
+              if (this.user.role === 'STUDENT') {
+                this.loadSelfData()
+              } else {
+                this.load(1)
+              }
               this.fromVisible = false
             } else {
               this.$message.error(res.msg)  // 弹出错误的信息
@@ -281,6 +295,19 @@ export default {
       }).then(res => {
         this.tableData = res.data?.list
         this.total = res.data?.total
+      })
+    },
+    loadSelfData() {
+      this.$request.get(`/apply/selectByStuId`, {
+        params: {
+          stuId: this.user.id
+        }
+      }).then(res => {
+        if (res.code === '200') {
+          this.selfData = [res.data];
+        } else {
+          this.$message.error(res.msg);
+        }
       })
     },
     reset() {

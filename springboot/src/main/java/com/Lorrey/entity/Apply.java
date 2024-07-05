@@ -17,6 +17,8 @@ public class Apply implements Serializable {
 
     /** ID */
     private Integer id;
+    /** 学生ID */
+    private Integer stuId;
     /** 用户名 */
     private String username;
     /** 姓名 */

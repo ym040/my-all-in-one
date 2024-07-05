@@ -21,10 +21,11 @@
     </select>
 
     <select id="selectById" resultType="com.Lorrey.entity.Classes">
-        select
-        <include refid="Base_Column_List" />
+        select classes.*, teacher.name as teacherName, speciality.name as specialityName
         from classes
-        where id = #{id}
+                 left join teacher on classes.teacher_id = teacher.id
+                 left join speciality on classes.speciality_id = speciality.id
+        where classes.id = #{id}
     </select>
 
     <select id="selectBySpecialityId" resultType="com.Lorrey.entity.Classes">

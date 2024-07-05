@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 实习任务2前端操作接口
@@ -25,6 +26,15 @@ public class TaskController {
     @PostMapping("/add")
     public Result add(@RequestBody Task task) {
         taskService.add(task);
+        return Result.success();
+    }
+
+    /**
+     * 批量新增
+     */
+    @PostMapping("/batchAdd")
+    public Result batchAdd(@RequestBody List<Task> tasks) {
+        taskService.batchAdd(tasks);
         return Result.success();
     }
 
@@ -63,6 +73,7 @@ public class TaskController {
         Task task = taskService.selectById(id);
         return Result.success(task);
     }
+
 
     /**
      * 查询所有
