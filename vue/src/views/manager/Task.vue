@@ -6,7 +6,7 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
+      <el-table :data="user.role === 'STUDENT' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="studentId" label="学生ID"></el-table-column>
@@ -14,14 +14,29 @@
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="指导老师"></el-table-column>
         <el-table-column prop="jobName" label="岗位"></el-table-column>
-        <el-table-column prop="file" label="三方协议"></el-table-column>
+        <el-table-column prop="file" label="三方协议">
+          <template v-slot="scope">
+            <el-button v-if="scope.row.file" type="text" @click="viewFile(scope.row.file)">下载</el-button>
+            <span v-else>无</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="count" label="签到次数"></el-table-column>
-        <el-table-column prop="record" label="周志"></el-table-column>
+        <el-table-column prop="record" label="周志">
+          <template v-slot="scope">
+            <el-button v-if="scope.row.record" type="text" @click="viewFile(scope.row.record)">下载</el-button>
+            <span v-else>无</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="enterpriseRemark" label="企业评价"></el-table-column>
         <el-table-column prop="teacherRemark" label="教师评价"></el-table-column>
         <el-table-column prop="self" label="自我鉴定"></el-table-column>
         <el-table-column prop="grade" label="成绩鉴定"></el-table-column>
-        <el-table-column prop="report" label="实践报告"></el-table-column>
+        <el-table-column prop="report" label="实践报告">
+          <template v-slot="scope">
+            <el-button v-if="scope.row.report" type="text" @click="viewFile(scope.row.report)">下载</el-button>
+            <span v-else>无</span>
+          </template>
+        </el-table-column>
         <el-table-column label="实习状态" align="center">
           <template v-slot="scope">
             <el-switch
@@ -36,7 +51,7 @@
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT' && scope.row.status === '实习中'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
-            <el-button size="mini" type="success" plain @click="checkIn(scope.row)"v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">签到</el-button>
+            <el-button size="mini" type="success" plain @click="checkIn(scope.row)" v-if="user.role === 'STUDENT'">签到</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -88,10 +103,24 @@
           <el-input v-model="form.jobName" disabled></el-input>
         </el-form-item>
         <el-form-item label="三方协议" prop="file">
-          <el-input type="textarea" v-model="form.file" rows="4" placeholder="请输入三方协议"></el-input>
+          <el-upload
+              :action="$baseUrl + '/files/upload'"
+              :show-file-list="false"
+              :on-success="handleFileSuccessForFile"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+          <el-input v-model="form.file" disabled></el-input>
         </el-form-item>
         <el-form-item label="实习周志" prop="record">
-          <el-input type="textarea" v-model="form.record" rows="4" placeholder="请输入实习周志"></el-input>
+          <el-upload
+              :action="$baseUrl + '/files/upload'"
+              :show-file-list="false"
+              :on-success="handleFileSuccessForRecord"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+          <el-input v-model="form.record" disabled></el-input>
         </el-form-item>
         <el-form-item label="企业评价" prop="enterpriseRemark">
           <el-input type="textarea" v-model="form.enterpriseRemark" rows="4" placeholder="请输入企业评价"></el-input>
@@ -106,7 +135,14 @@
           <el-input type="textarea" v-model="form.grade" rows="4" placeholder="请输入成绩鉴定"></el-input>
         </el-form-item>
         <el-form-item label="实践报告" prop="report">
-          <el-input type="textarea" v-model="form.report" rows="4" placeholder="请输入实践报告"></el-input>
+          <el-upload
+              :action="$baseUrl + '/files/upload'"
+              :show-file-list="false"
+              :on-success="handleFileSuccessForReport"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+          <el-input v-model="form.report" disabled></el-input>
         </el-form-item>
       </el-form>
 
@@ -137,13 +173,33 @@ export default {
       ids: [],
       studentData: [],
       selectedStudents: [],  // 用于存储选中的学生
+      selfData: [], // 新增selfData来存储学生用户的数据
     };
   },
   created() {
-    this.load(1);
-    this.loadStudent();
+    if (this.user.role === 'STUDENT') {
+      this.loadSelfData();
+    } else {
+      this.load(1);
+      this.loadStudent();
+    }
   },
   methods: {
+    loadSelfData() {
+      this.$request.get('/task/selectByStuId', {
+        params: {
+          stuId: this.user.id
+        }
+      }).then(res => {
+        console.log(res);
+        if (res.code === '200') {
+          this.selfData = [res.data];
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
+
     loadStudent() {
       this.$request.get('/apply/selectAll').then(res => {
         if (res.code === '200') {
@@ -155,7 +211,6 @@ export default {
 
           // 获取已发布的任务
           this.$request.get('/task/selectAll').then(taskRes => {
-            console.log(taskRes);
             if (taskRes.code === '200') {
               const publishedStudentIds = new Set(taskRes.data.map(task => task.studentId));
               this.studentData = this.originalStudentData.filter(student => !publishedStudentIds.has(student.studentId)); // 这里修改为 studentId
@@ -223,6 +278,19 @@ export default {
       } else {
         this.$message.error('只有状态为实习中的任务可以编辑');
       }
+    },
+    handleFileSuccessForFile(response, file, fileList) {
+      this.form.file = response.data;  // 更新三方协议文件路径
+    },
+    handleFileSuccessForRecord(response, file, fileList) {
+      this.form.record = response.data;  // 更新实习周志文件路径
+    },
+    handleFileSuccessForReport(response, file, fileList) {
+      this.form.report = response.data;  // 更新实践报告文件路径
+    },
+    viewFile(filePath) {
+      // 这里假设文件路径是相对路径，可以根据实际情况调整
+      window.open(`${filePath}`, '_blank');
     },
     save() {
       this.$refs.formRef.validate(valid => {
@@ -325,6 +393,7 @@ export default {
           this.$message.success('签到成功');
           // 更新表格中的对应行数据
           const index = this.tableData.findIndex(item => item.id === row.id);
+          this.loadSelfData();
           if (index !== -1) {
             this.tableData.splice(index, 1, row);
           }

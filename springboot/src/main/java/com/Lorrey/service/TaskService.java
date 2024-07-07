@@ -77,5 +77,12 @@ public class TaskService {
     public void batchAdd(List<Task> tasks) {
         taskMapper.batchAdd(tasks);
     }
+
+    /**
+     * 根据学生ID查询
+     */
+    public Task selectByStuId(Integer stuId) {
+        return taskMapper.selectByStuId(stuId);
+    }
 }
 

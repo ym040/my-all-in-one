@@ -38,4 +38,9 @@ public interface TaskMapper {
      * 批量新增
      */
     void batchAdd(List<Task> tasks);
+
+    /**
+     * 根据学生ID查询
+     */
+    Task selectByStuId(Integer stuId);
 }

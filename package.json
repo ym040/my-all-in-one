@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "vue-quill-editor": "^3.0.6"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-private-methods": "^7.24.7"
   }
 }

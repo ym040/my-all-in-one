@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://localhost:3307/i-manager?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
   servlet:
     multipart:
-      max-file-size: 100MB
+      max-file-size: 20MB
       max-request-size: 100MB
 
 # 配置mybatis实体和xml映射

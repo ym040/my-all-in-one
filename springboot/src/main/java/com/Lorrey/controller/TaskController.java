@@ -1,6 +1,7 @@
 package com.Lorrey.controller;
 
 import com.Lorrey.common.Result;
+import com.Lorrey.entity.Apply;
 import com.Lorrey.entity.Task;
 import com.Lorrey.service.TaskService;
 import com.github.pagehelper.PageInfo;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
+
+import static com.Lorrey.common.enums.ResultCodeEnum.FILE_UPLOAD_ERROR;
 
 /**
  * 实习任务2前端操作接口
@@ -74,6 +77,15 @@ public class TaskController {
         return Result.success(task);
     }
 
+    /**
+     * 根据学生ID查询
+     */
+    @GetMapping("/selectByStuId")
+    public Result selectByStuId(@RequestParam Integer stuId) {
+        Task task = taskService.selectByStuId(stuId);
+        System.out.println(task);
+        return Result.success(task);
+    }
 
     /**
      * 查询所有
@@ -81,7 +93,6 @@ public class TaskController {
     @GetMapping("/selectAll")
     public Result selectAll(Task task ) {
         List<Task> list = taskService.selectAll(task);
-        System.out.println(list);
         return Result.success(list);
     }
 

@@ -40,6 +40,17 @@
         where id = #{id}
     </select>
 
+    <select id="selectByStuId" resultType="com.Lorrey.entity.Task">
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName, status
+        from task
+                 left join student on task.student_id = student.id
+                 left join classes on task.class_id = classes.id
+                 left join teacher on task.teacher_id = teacher.id
+                 left join job on task.job_id = job.id
+                 left join apply on task.student_id = apply.stu_id
+        where student_id = #{stuId}
+    </select>
+
     <delete id="deleteById">
         delete from task
         where  id = #{id}
