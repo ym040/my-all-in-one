@@ -81,6 +81,7 @@ public class TaskController {
     @GetMapping("/selectAll")
     public Result selectAll(Task task ) {
         List<Task> list = taskService.selectAll(task);
+        System.out.println(list);
         return Result.success(list);
     }
 

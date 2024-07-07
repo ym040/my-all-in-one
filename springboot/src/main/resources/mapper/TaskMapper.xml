@@ -9,12 +9,13 @@
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Task">
-        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName, status
         from task
         left join student on task.student_id = student.id
         left join classes on task.class_id = classes.id
         left join teacher on task.teacher_id = teacher.id
         left join job on task.job_id = job.id
+        left join apply on task.student_id = apply.stu_id
         <where>
             <if test="id != null"> and id= #{id}</if>
             <if test="studentId != null"> and student_id = #{studentId}</if>
@@ -79,10 +80,10 @@
     </insert>
 
     <insert id="batchAdd" parameterType="java.util.List">
-        INSERT INTO task (student_id, class_id, teacher_id)
+        INSERT INTO task (student_id, class_id, teacher_id, job_id)
         VALUES
         <foreach item="item" index="index" collection="list" separator=",">
-            (#{item.studentId}, #{item.classId}, #{item.teacherId})
+            (#{item.studentId}, #{item.classId}, #{item.teacherId}, #{item.jobId})
         </foreach>
     </insert>
 

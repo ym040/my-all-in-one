@@ -19,13 +19,24 @@
         <el-table-column prop="record" label="周志"></el-table-column>
         <el-table-column prop="enterpriseRemark" label="企业评价"></el-table-column>
         <el-table-column prop="teacherRemark" label="教师评价"></el-table-column>
-        <el-table-column prop="report" label="实践报告"></el-table-column>
         <el-table-column prop="self" label="自我鉴定"></el-table-column>
         <el-table-column prop="grade" label="成绩鉴定"></el-table-column>
-        <el-table-column label="操作" align="center" width="180" v-if="user.role === 'ADMIN'">
+        <el-table-column prop="report" label="实践报告"></el-table-column>
+        <el-table-column label="实习状态" align="center">
           <template v-slot="scope">
-            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="del(scope.row.id)">删除</el-button>
+            <el-switch
+                v-model="scope.row.status"
+                active-value="实习中"
+                inactive-value="未实习"
+                disabled
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="180">
+          <template v-slot="scope">
+            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT' && scope.row.status === '实习中'">编辑</el-button>
+            <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
+            <el-button size="mini" type="success" plain @click="checkIn(scope.row)"v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">签到</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,10 +57,11 @@
     <el-dialog title="发布任务" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-table :data="studentData" @selection-change="handleStudentSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="学生ID"></el-table-column>
+        <el-table-column prop="studentId" label="学生ID"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="教师"></el-table-column>
+        <el-table-column prop="jobName" label="岗位"></el-table-column>
       </el-table>
 
       <div slot="footer" class="dialog-footer">
@@ -73,22 +85,28 @@
           <el-input v-model="form.teacherName" disabled></el-input>
         </el-form-item>
         <el-form-item label="岗位" prop="jobName">
-          <el-input v-model="form.jobName"></el-input>
+          <el-input v-model="form.jobName" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="三方协议" prop="file">
+          <el-input type="textarea" v-model="form.file" rows="4" placeholder="请输入三方协议"></el-input>
+        </el-form-item>
+        <el-form-item label="实习周志" prop="record">
+          <el-input type="textarea" v-model="form.record" rows="4" placeholder="请输入实习周志"></el-input>
         </el-form-item>
         <el-form-item label="企业评价" prop="enterpriseRemark">
-          <el-input v-model="form.enterpriseRemark"></el-input>
+          <el-input type="textarea" v-model="form.enterpriseRemark" rows="4" placeholder="请输入企业评价"></el-input>
         </el-form-item>
         <el-form-item label="教师评价" prop="teacherRemark">
-          <el-input v-model="form.teacherRemark"></el-input>
-        </el-form-item>
-        <el-form-item label="实践报告" prop="report">
-          <el-input v-model="form.report"></el-input>
+          <el-input type="textarea" v-model="form.teacherRemark" rows="4" placeholder="请输入教师评价"></el-input>
         </el-form-item>
         <el-form-item label="自我鉴定" prop="self">
-          <el-input v-model="form.self"></el-input>
+          <el-input type="textarea" v-model="form.self" rows="4" placeholder="请输入自我鉴定"></el-input>
         </el-form-item>
         <el-form-item label="成绩鉴定" prop="grade">
-          <el-input v-model="form.grade"></el-input>
+          <el-input type="textarea" v-model="form.grade" rows="4" placeholder="请输入成绩鉴定"></el-input>
+        </el-form-item>
+        <el-form-item label="实践报告" prop="report">
+          <el-input type="textarea" v-model="form.report" rows="4" placeholder="请输入实践报告"></el-input>
         </el-form-item>
       </el-form>
 
@@ -102,7 +120,6 @@
 
 
 <script>
-import teacher from "@/views/manager/Teacher";
 
 export default {
   name: "Task",
@@ -128,15 +145,20 @@ export default {
   },
   methods: {
     loadStudent() {
-      this.$request.get('/student/selectAll').then(res => {
+      this.$request.get('/apply/selectAll').then(res => {
         if (res.code === '200') {
-          this.originalStudentData = res.data;
+          // 将 stuId 映射为 studentId
+          this.originalStudentData = res.data.map(student => ({
+            ...student,
+            studentId: student.stuId,
+          }));
 
           // 获取已发布的任务
           this.$request.get('/task/selectAll').then(taskRes => {
+            console.log(taskRes);
             if (taskRes.code === '200') {
               const publishedStudentIds = new Set(taskRes.data.map(task => task.studentId));
-              this.studentData = this.originalStudentData.filter(student => !publishedStudentIds.has(student.id));
+              this.studentData = this.originalStudentData.filter(student => !publishedStudentIds.has(student.studentId)); // 这里修改为 studentId
 
               // 根据班级ID查找教师信息并更新studentData
               const classIds = new Set(this.studentData.map(student => student.classId));
@@ -148,6 +170,7 @@ export default {
                 this.studentData.forEach(student => {
                   const teacherInfo = this.teacherMap.get(student.classId) || { teacherId: null, teacherName: '未指定' };
                   student.teacherName = teacherInfo.teacherName;
+
                 });
               });
             } else {
@@ -170,10 +193,11 @@ export default {
       const tasks = this.selectedStudents.map(student => {
         const teacherInfo = this.teacherMap.get(student.classId) || { teacherId: null, teacherName: '未指定' };
         return {
-          studentId: student.id,
+          studentId: student.studentId,  // 这里修改为 studentId
           name: student.name,
           classId: student.classId,
           teacherId: teacherInfo.teacherId,
+          jobId: student.jobId,
         };
       });
 
@@ -181,6 +205,7 @@ export default {
         if (res.code === '200') {
           this.$message.success('发布成功');
           this.load(1);
+          this.loadStudent();
           this.fromVisible = false;
         } else {
           this.$message.error(res.msg);
@@ -188,12 +213,16 @@ export default {
       });
     },
     handleEdit(row) {
-      this.form = JSON.parse(JSON.stringify(row));
-      // 自动设置指导老师
-      this.getTeacherByClassId(this.form.classId).then(teacherInfo => {
-        this.form.teacherName = teacherInfo.teacherName;
-        this.editVisible = true;
-      });
+      if (row.status === '实习中') {
+        this.form = JSON.parse(JSON.stringify(row));
+        // 自动设置指导老师
+        this.getTeacherByClassId(this.form.classId).then(teacherInfo => {
+          this.form.teacherName = teacherInfo.teacherName;
+          this.editVisible = true;
+        });
+      } else {
+        this.$message.error('只有状态为实习中的任务可以编辑');
+      }
     },
     save() {
       this.$refs.formRef.validate(valid => {
@@ -207,6 +236,7 @@ export default {
               this.$message.success('保存成功');
               this.load(1);
               this.fromVisible = false;
+              this.editVisible = false;
             } else {
               this.$message.error(res.msg);
             }
@@ -220,6 +250,7 @@ export default {
           if (res.code === '200') {
             this.$message.success('操作成功');
             this.load(1);
+            this.loadStudent();
           } else {
             this.$message.error(res.msg);
           }
@@ -239,6 +270,7 @@ export default {
           if (res.code === '200') {
             this.$message.success('操作成功');
             this.load(1);
+            this.loadStudent();
           } else {
             this.$message.error(res.msg);
           }
@@ -276,6 +308,31 @@ export default {
           this.$message.error(res.msg);
           return { classId, teacherId: null, teacherName: '未指定' };
         }
+      });
+    },
+    checkIn(row) {
+      // 此处需要调用后端接口或直接更新前端数据，将对应行的签到次数加一
+      const updatedRow = { ...row };
+      updatedRow.count += 1; // 将签到次数加一
+
+      // 调用保存方法或直接更新表格数据
+      this.saveCheckIn(updatedRow); // 可能需要保存到后端
+    },
+    saveCheckIn(row) {
+      // 调用后端接口保存签到次数
+      this.$request.put('/task/update', row).then(res => {
+        if (res.code === '200') {
+          this.$message.success('签到成功');
+          // 更新表格中的对应行数据
+          const index = this.tableData.findIndex(item => item.id === row.id);
+          if (index !== -1) {
+            this.tableData.splice(index, 1, row);
+          }
+        } else {
+          this.$message.error(res.msg);
+        }
+      }).catch(err => {
+        this.$message.error('签到失败');
       });
     },
   }

@@ -44,6 +44,7 @@ public class Task implements Serializable {
     private String className;
     private String teacherName;
     private String jobName;
+    private String status;
 
 
 }
