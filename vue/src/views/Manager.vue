@@ -60,7 +60,6 @@
             </template>
             <el-menu-item index="/apply" v-if="user.role !== 'ENTERPRISE'">实习申请</el-menu-item>
             <el-menu-item index="/task" v-if="user.role !== 'ENTERPRISE'">实习任务</el-menu-item>
-            <el-menu-item index="/score" >实习成绩</el-menu-item>
           </el-submenu>
           <el-submenu index="user" v-if="user.role === 'ADMIN'">
             <template slot="title">

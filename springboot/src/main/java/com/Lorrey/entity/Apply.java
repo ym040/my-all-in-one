@@ -41,6 +41,8 @@ public class Apply implements Serializable {
     private String endTime;
     /** 实习状态 */
     private String status;
+    /** 阅读状态 */
+    private String readStatus;
 
     /* 关联ID */
     private String className;

@@ -88,6 +88,15 @@ public class TaskController {
     }
 
     /**
+     * 根据学生成绩查询
+     */
+    @GetMapping("/selectByGrade")
+    public Result selectByGrade(@RequestParam String grade) {
+        List<Task> tasks = taskService.selectByGrade(grade);
+        return Result.success(tasks);
+    }
+
+    /**
      * 查询所有
      */
     @GetMapping("/selectAll")

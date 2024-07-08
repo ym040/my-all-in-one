@@ -86,6 +86,13 @@ public class ApplyService {
     }
 
     /**
+     * 更新阅读状态
+     */
+    public void updateReadStatus(Apply apply) {
+        applyMapper.updateReadStatus(apply);
+    }
+
+    /**
      * 根据用户名查找
      */
     public Apply selectByUsername(String username) {

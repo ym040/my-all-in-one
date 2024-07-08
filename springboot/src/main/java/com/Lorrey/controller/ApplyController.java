@@ -117,4 +117,16 @@ public class ApplyController {
         return Result.success();
     }
 
+    /**
+     * 更新阅读状态
+     */
+    @PutMapping("/updateReadStatus")
+    public Result updateReadStatus(@RequestBody Apply apply) {
+        if (apply.getId() == null || apply.getReadStatus() == null) {
+            return Result.error(PARAM_ERROR);
+        }
+        applyService.updateReadStatus(apply);
+        return Result.success();
+    }
+
 }

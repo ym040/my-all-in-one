@@ -84,5 +84,12 @@ public class TaskService {
     public Task selectByStuId(Integer stuId) {
         return taskMapper.selectByStuId(stuId);
     }
+
+    /**
+     * 根据学生成绩查询
+     */
+    public List<Task> selectByGrade(String grade) {
+        return taskMapper.selectByGrade(grade);
+    }
 }
 

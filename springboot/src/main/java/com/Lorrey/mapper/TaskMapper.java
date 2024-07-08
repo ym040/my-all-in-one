@@ -43,4 +43,9 @@ public interface TaskMapper {
      * 根据学生ID查询
      */
     Task selectByStuId(Integer stuId);
+
+    /**
+     * 根据学生成绩查询
+     */
+    List<Task> selectByGrade(String grade);
 }

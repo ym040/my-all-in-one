@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div class="operation"  v-if="user.role === 'TEACHER'">
+      <el-select v-model="selectedGrade" placeholder="请选择成绩">
+        <el-option label="优秀" value="优秀"></el-option>
+        <el-option label="不合格" value="不合格"></el-option>
+      </el-select>
+      <el-button type="primary" plain style="margin-left: 10px" @click="searchByGrade">查找</el-button>
+      <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+    </div>
+
     <div class="operation">
       <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN'">发布任务</el-button>
       <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
@@ -123,16 +132,21 @@
           <el-input v-model="form.record" disabled></el-input>
         </el-form-item>
         <el-form-item label="企业评价" prop="enterpriseRemark">
-          <el-input type="textarea" v-model="form.enterpriseRemark" rows="4" placeholder="请输入企业评价"></el-input>
+          <el-input type="textarea" v-model="form.enterpriseRemark" rows="4" placeholder="请输入企业评价" :disabled="user.role !== 'ENTERPRISE' && user.role !== 'ADMIN'"></el-input>
         </el-form-item>
         <el-form-item label="教师评价" prop="teacherRemark">
-          <el-input type="textarea" v-model="form.teacherRemark" rows="4" placeholder="请输入教师评价"></el-input>
+          <el-input type="textarea" v-model="form.teacherRemark" rows="4" placeholder="请输入教师评价" :disabled="user.role !== 'TEACHER' && user.role !== 'ADMIN'"></el-input>
         </el-form-item>
         <el-form-item label="自我鉴定" prop="self">
-          <el-input type="textarea" v-model="form.self" rows="4" placeholder="请输入自我鉴定"></el-input>
+          <el-input type="textarea" v-model="form.self" rows="4" placeholder="请输入自我鉴定" :disabled="user.role !== 'STUDENT' && user.role !== 'ADMIN'"></el-input>
         </el-form-item>
         <el-form-item label="成绩鉴定" prop="grade">
-          <el-input type="textarea" v-model="form.grade" rows="4" placeholder="请输入成绩鉴定"></el-input>
+          <el-select v-model="form.grade" placeholder="请选择成绩" :disabled="user.role !== 'TEACHER' && user.role !== 'ADMIN'">
+            <el-option label="优秀" value="优秀"></el-option>
+            <el-option label="良好" value="良好"></el-option>
+            <el-option label="中等" value="中等"></el-option>
+            <el-option label="不合格" value="不合格"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="实践报告" prop="report">
           <el-upload
@@ -174,6 +188,7 @@ export default {
       studentData: [],
       selectedStudents: [],  // 用于存储选中的学生
       selfData: [], // 新增selfData来存储学生用户的数据
+      selectedGrade: '', // 新增状态
     };
   },
   created() {
@@ -194,6 +209,7 @@ export default {
         console.log(res);
         if (res.code === '200') {
           this.selfData = [res.data];
+          this.total = res.data ? 1 : 0;
         } else {
           this.$message.error(res.msg);
         }
@@ -403,6 +419,25 @@ export default {
       }).catch(err => {
         this.$message.error('签到失败');
       });
+    },
+    searchByGrade() {
+      if (this.selectedGrade) {
+        this.$request.get('/task/selectByGrade', {
+          params: {
+            grade: this.selectedGrade,
+          }
+        }).then(res => {
+          if (res.code === '200') {
+            this.tableData = res.data;
+            this.total = res.data.length;
+            this.pageNum = 1;
+          } else {
+            this.$message.error(res.msg);
+          }
+        });
+      } else {
+        this.$message.warning('请选择成绩');
+      }
     },
   }
 };

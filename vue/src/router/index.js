@@ -35,7 +35,6 @@ const routes = [
       { path: 'enterprise', name: 'Enterprise', meta: { name: '企业信息' }, component: () => import('../views/manager/Enterprise') },
       { path: 'apply', name: 'Apply', meta: { name: '实习申请' }, component: () => import('../views/manager/Apply') },
       { path: 'task', name: 'Task', meta: { name: '实习任务' }, component: () => import('../views/manager/Task') },
-      { path: 'score', name: 'Score', meta: { name: '实习成绩' }, component: () => import('../views/manager/Score') },
     ]
   },
   {

@@ -37,10 +37,17 @@
             ></el-switch>
           </template>
         </el-table-column>
+        <el-table-column prop="read_status" label="阅读状态" align="center">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.read_status === 2" type="success">已读</el-tag>
+            <el-tag v-else type="warning">未读</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
+            <el-button size="mini" plain @click="handleView(scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -305,6 +312,7 @@ export default {
       }).then(res => {
         if (res.code === '200') {
           this.selfData = [res.data];
+          this.total = res.data ? 1 : 0;
         } else {
           this.$message.error(res.msg);
         }
@@ -337,6 +345,40 @@ export default {
           this.$message.error(res.msg);
         }
       })
+    },
+    handleView(row) {
+      console.log(row)
+      // 更新读取状态为已读
+      if (row.readStatus === 1) {  // 如果是未读状态
+        this.updateReadStatus(row.stuId, 2).then(() => {
+          row.readStatus = 2;  // 更新为已读状态
+          this.$message.success('读取状态更新成功');
+        }).catch(error => {
+          this.$message.error('读取状态更新失败');
+        });
+      }
+
+      // 将当前行数据赋值给表单，并打开对话框
+      //this.form = JSON.parse(JSON.stringify(row));
+      //this.fromVisible = true;
+    },
+
+    updateReadStatus(stuId, status) {
+      return new Promise((resolve, reject) => {
+        this.$request({
+          url: '/apply/updateReadStatus',
+          method: 'PUT',
+          data: { stuId: stuId, readStatus: status }
+        }).then(res => {
+          if (res.code === '200') {
+            resolve();
+          } else {
+            reject();
+          }
+        }).catch(error => {
+          reject();
+        });
+      });
     },
   }
 }
