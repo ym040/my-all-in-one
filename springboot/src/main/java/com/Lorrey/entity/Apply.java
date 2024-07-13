@@ -25,6 +25,8 @@ public class Apply implements Serializable {
     private String name;
     /** 班级ID */
     private Integer classId;
+    /** 教师ID */
+    private Integer teacherId;
     /** 联系电话 */
     private String phone;
     /** 企业ID */
@@ -42,10 +44,11 @@ public class Apply implements Serializable {
     /** 实习状态 */
     private String status;
     /** 阅读状态 */
-    private String readStatus;
+    private Integer readStatus;
 
     /* 关联ID */
     private String className;
+    private String teacherName;
     private String enterpriseName;
     private String jobName;
 

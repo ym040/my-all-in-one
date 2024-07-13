@@ -48,4 +48,9 @@ public interface TaskMapper {
      * 根据学生成绩查询
      */
     List<Task> selectByGrade(String grade);
+
+    /**
+     * 根据教师ID查询
+     */
+    List<Task> selectByTeacherId(Integer teacherId);
 }

@@ -12,13 +12,14 @@
     </div>
 
     <div class="table">
-      <el-table :data="user.role === 'STUDENT' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
+      <el-table :data="user.role === 'STUDENT' || user.role === 'TEACHER' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="stuId" label="学生ID"></el-table-column>
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
+        <el-table-column prop="teacherName" label="教师"></el-table-column>
         <el-table-column prop="phone" label="联系电话"></el-table-column>
         <el-table-column prop="enterpriseName" label="单位名称"></el-table-column>
         <el-table-column prop="jobName" label="岗位名称"></el-table-column>
@@ -39,7 +40,7 @@
         </el-table-column>
         <el-table-column prop="read_status" label="阅读状态" align="center">
           <template v-slot="scope">
-            <el-tag v-if="scope.row.read_status === 2" type="success">已读</el-tag>
+            <el-tag v-if="scope.row.readStatus === 2" type="success">已读</el-tag>
             <el-tag v-else type="warning">未读</el-tag>
           </template>
         </el-table-column>
@@ -47,7 +48,7 @@
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
-            <el-button size="mini" plain @click="handleView(scope.row)">查看</el-button>
+            <el-button size="mini" plain @click="handleView(scope.row)" v-if="user.role !== 'STUDENT'">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -78,8 +79,13 @@
           <el-input v-model="form.name" placeholder="姓名" :disabled="user.role === 'STUDENT'"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="classId">
-          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%" :disabled="user.role === 'STUDENT'">
+          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
             <el-option v-for="item in classData" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="教师" prop="teacherId">
+          <el-select v-model="form.teacherId" placeholder="请选择教师" style="width: 100%">
+            <el-option v-for="item in teacherData" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
@@ -164,6 +170,7 @@ export default {
       },
       ids: [],
       classData: [],
+      teacherData: [],
       enterpriseData: [],
       jobData: [],
       timeDate: "",
@@ -177,9 +184,12 @@ export default {
   created() {
     if (this.user.role === 'STUDENT') {
       this.loadSelfData();
+    } else if (this.user.role === 'TEACHER') {
+      this.loadTeacherSelfData();
     } else {
       this.load(1);
     }
+    this.loadTeachers();
     this.loadClasses();
     this.loadEnterprise();
     this.loadJob();
@@ -198,6 +208,15 @@ export default {
       this.$request.get('/enterprise/selectAll').then(res => {
         if (res.code ==='200') {
           this.enterpriseData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadTeachers() {
+      this.$request.get('/teacher/selectAll').then(res => {
+        if (res.code ==='200') {
+          this.teacherData = res.data
         } else {
           this.$message.error(res.msg)
         }
@@ -318,6 +337,21 @@ export default {
         }
       })
     },
+    loadTeacherSelfData() {
+      this.$request.get(`/apply/selectByTeacherId`, {
+        params: {
+          teacherId: this.user.id
+        }
+      }).then(res => {
+        if (res.code === '200') {
+          this.selfData = res.data
+          this.total = res.data?.total
+        } else {
+          this.$message.error(res.msg);
+        }
+      })
+
+    },
     reset() {
       this.username = null
       this.load(1)
@@ -347,11 +381,12 @@ export default {
       })
     },
     handleView(row) {
-      console.log(row)
+      //console.log(row)
       // 更新读取状态为已读
       if (row.readStatus === 1) {  // 如果是未读状态
-        this.updateReadStatus(row.stuId, 2).then(() => {
-          row.readStatus = 2;  // 更新为已读状态
+        row.readStatus = 2;  // 更新为已读状态
+        console.log(row.readStatus)
+        this.updateReadStatus(row).then(() => {
           this.$message.success('读取状态更新成功');
         }).catch(error => {
           this.$message.error('读取状态更新失败');
@@ -359,16 +394,16 @@ export default {
       }
 
       // 将当前行数据赋值给表单，并打开对话框
-      //this.form = JSON.parse(JSON.stringify(row));
-      //this.fromVisible = true;
+      this.form = JSON.parse(JSON.stringify(row));
+      this.fromVisible = true;
     },
 
-    updateReadStatus(stuId, status) {
+    updateReadStatus(row) {
       return new Promise((resolve, reject) => {
         this.$request({
           url: '/apply/updateReadStatus',
           method: 'PUT',
-          data: { stuId: stuId, readStatus: status }
+          data: { id: row.id, readStatus: row.readStatus}
         }).then(res => {
           if (res.code === '200') {
             resolve();

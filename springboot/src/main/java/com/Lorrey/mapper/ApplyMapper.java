@@ -55,4 +55,9 @@ public interface ApplyMapper {
      * 根据学生ID查询
      */
     Apply selectByStuId(Integer stuId);
+
+    /**
+     * 根据教师ID查询
+     */
+    List<Apply> selectByTeacherId(Integer teacherId);
 }

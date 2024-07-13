@@ -15,7 +15,7 @@
     </div>
 
     <div class="table">
-      <el-table :data="user.role === 'STUDENT' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
+      <el-table :data="user.role === 'STUDENT' || user.role === 'TEACHER' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="studentId" label="学生ID"></el-table-column>
@@ -61,6 +61,7 @@
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT' && scope.row.status === '实习中'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
             <el-button size="mini" type="success" plain @click="checkIn(scope.row)" v-if="user.role === 'STUDENT'">签到</el-button>
+            <el-button size="mini" type="success" plain  v-if="user.role === 'TEACHER' || user.role === 'ENTERPRISE'">评价</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -194,6 +195,8 @@ export default {
   created() {
     if (this.user.role === 'STUDENT') {
       this.loadSelfData();
+    } else if (this.user.role === 'TEACHER') {
+      this.loadTeacherSelfData();
     } else {
       this.load(1);
       this.loadStudent();
@@ -210,6 +213,22 @@ export default {
         if (res.code === '200') {
           this.selfData = [res.data];
           this.total = res.data ? 1 : 0;
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
+
+    loadTeacherSelfData() {
+      this.$request.get('/task/selectByTeacherId', {
+        params: {
+          teacherId: this.user.id
+        }
+      }).then(res => {
+        if (res.code === '200') {
+          this.selfData = res.data;
+          console.log(this.selfData)
+          this.total = res.data?.total
         } else {
           this.$message.error(res.msg);
         }

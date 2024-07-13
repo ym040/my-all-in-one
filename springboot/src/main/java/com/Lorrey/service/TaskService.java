@@ -91,5 +91,12 @@ public class TaskService {
     public List<Task> selectByGrade(String grade) {
         return taskMapper.selectByGrade(grade);
     }
+
+    /**
+     * 根据教师ID查询
+     */
+    public List<Task> selectByTeacherId(Integer teacherId) {
+        return taskMapper.selectByTeacherId(teacherId);
+    }
 }
 

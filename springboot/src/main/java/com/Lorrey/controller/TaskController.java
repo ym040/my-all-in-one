@@ -83,8 +83,16 @@ public class TaskController {
     @GetMapping("/selectByStuId")
     public Result selectByStuId(@RequestParam Integer stuId) {
         Task task = taskService.selectByStuId(stuId);
-        System.out.println(task);
         return Result.success(task);
+    }
+
+    /**
+     * 根据教师ID查询
+     */
+    @GetMapping("/selectByTeacherId")
+    public Result selectByTeacherId(@RequestParam Integer teacherId) {
+        List<Task> tasks = taskService.selectByTeacherId(teacherId);
+        return Result.success(tasks);
     }
 
     /**

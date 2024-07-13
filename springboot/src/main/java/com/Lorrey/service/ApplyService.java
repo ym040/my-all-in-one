@@ -75,6 +75,7 @@ public class ApplyService {
     public PageInfo<Apply> selectPage(Apply apply, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Apply> list = applyMapper.selectAll(apply);
+        //System.out.println(list);
         return PageInfo.of(list);
     }
 
@@ -104,6 +105,13 @@ public class ApplyService {
      */
     public Apply selectByStuId(Integer stuId) {
         return applyMapper.selectByStuId(stuId);
+    }
+
+    /**
+     * 根据教师ID查询
+     */
+    public List<Apply> selectByTeacherId(Integer teacherId) {
+        return applyMapper.selectByTeacherId(teacherId);
     }
 }
 

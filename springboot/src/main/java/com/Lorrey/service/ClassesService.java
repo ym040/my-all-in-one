@@ -77,4 +77,5 @@ public class ClassesService {
     public List<Classes> selectBySpecialityId(Integer specialityId) {
         return classesMapper.selectBySpecialityId(specialityId);
     }
+
 }
