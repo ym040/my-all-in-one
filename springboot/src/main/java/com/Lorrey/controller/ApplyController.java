@@ -115,6 +115,39 @@ public class ApplyController {
     }
 
     /**
+     * 企业分页查询
+     */
+    @GetMapping("/selectEnterprise")
+    public Result selectEnterprise(Apply apply,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Apply> page = applyService.selectEnterprise(apply, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 教师分页查询
+     */
+    @GetMapping("/selectByTeacher")
+    public Result selectByTeacher(Apply apply,
+                                   @RequestParam(defaultValue = "1") Integer pageNum,
+                                   @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Apply> page = applyService.selectByTeacher(apply, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 学生分页查询
+     */
+    @GetMapping("/selectByStudent")
+    public Result selectByStudent(Apply apply,
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Apply> page = applyService.selectByStudent(apply, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
      * 更新状态
      */
     @PutMapping("/updateStatus")

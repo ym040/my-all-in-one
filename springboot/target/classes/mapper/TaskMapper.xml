@@ -5,31 +5,33 @@
 <mapper namespace="com.Lorrey.mapper.TaskMapper">
 
     <sql id="Base_Column_List">
-        id,student_id,class_id,teacher_id,job_id,file,count,record,enterprise_remark,teacher_remark,report,self,grade
+        id,student_id,class_id,teacher_id,job_id,enterprise_id,file,count,record,enterprise_remark,teacher_remark,report,self,grade
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Task">
-        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName, status
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
         from task
         left join student on task.student_id = student.id
         left join classes on task.class_id = classes.id
         left join teacher on task.teacher_id = teacher.id
         left join job on task.job_id = job.id
+        left join enterprise on task.enterprise_id = enterprise.id
         left join apply on task.student_id = apply.stu_id
         <where>
-            <if test="id != null"> and id= #{id}</if>
-            <if test="studentId != null"> and student_id = #{studentId}</if>
-            <if test="classId != null"> and class_id = #{classId}</if>
-            <if test="teacherId != null"> and teacher_id = #{teacherId}</if>
-            <if test="jobId != null"> and job_id = #{jobId}</if>
-            <if test="file != null"> and file= #{file}</if>
-            <if test="count != null"> and count= #{count}</if>
-            <if test="record != null"> and record= #{record}</if>
-            <if test="enterpriseRemark != null"> and enterprise_remark= #{enterpriseRemark}</if>
-            <if test="teacherRemark != null"> and teacher_remark= #{teacherRemark}</if>
-            <if test="report != null"> and report= #{report}</if>
-            <if test="self != null"> and self= #{self}</if>
-            <if test="grade != null"> and grade= #{grade}</if>
+            <if test="id != null"> and task.id= #{id}</if>
+            <if test="studentId != null"> and task.student_id = #{studentId}</if>
+            <if test="classId != null"> and task.class_id = #{classId}</if>
+            <if test="teacherId != null"> and task.teacher_id = #{teacherId}</if>
+            <if test="jobId != null"> and task.job_id = #{jobId}</if>
+            <if test="enterpriseId != null"> task.enterprise_id = #{enterpriseId}</if>
+            <if test="file != null"> and task.file= #{file}</if>
+            <if test="count != null"> and task.count= #{count}</if>
+            <if test="record != null"> and task.record= #{record}</if>
+            <if test="enterpriseRemark != null"> and task.enterprise_remark= #{enterpriseRemark}</if>
+            <if test="teacherRemark != null"> and task.teacher_remark= #{teacherRemark}</if>
+            <if test="report != null"> and task.report= #{report}</if>
+            <if test="self != null"> and task.self= #{self}</if>
+            <if test="grade != null"> and task.grade= #{grade}</if>
         </where>
     </select>
 
@@ -41,36 +43,120 @@
     </select>
 
     <select id="selectByStuId" resultType="com.Lorrey.entity.Task">
-        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName, status
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
         from task
                  left join student on task.student_id = student.id
                  left join classes on task.class_id = classes.id
                  left join teacher on task.teacher_id = teacher.id
                  left join job on task.job_id = job.id
+                 left join enterprise on task.enterprise_id = enterprise.id
                  left join apply on task.student_id = apply.stu_id
         where student_id = #{stuId}
     </select>
 
     <select id="selectByGrade" resultType="com.Lorrey.entity.Task">
-        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName, status
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
         from task
                  left join student on task.student_id = student.id
                  left join classes on task.class_id = classes.id
                  left join teacher on task.teacher_id = teacher.id
                  left join job on task.job_id = job.id
+                 left join enterprise on task.enterprise_id = enterprise.id
                  left join apply on task.student_id = apply.stu_id
         where grade = #{grade}
     </select>
 
     <select id="selectByTeacherId" resultType="com.Lorrey.entity.Task">
-        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName, status
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
         from task
                  left join student on task.student_id = student.id
                  left join classes on task.class_id = classes.id
                  left join teacher on task.teacher_id = teacher.id
                  left join job on task.job_id = job.id
+                 left join enterprise on task.enterprise_id = enterprise.id
                  left join apply on task.student_id = apply.stu_id
         where task.teacher_id = #{teacherId}
+    </select>
+
+    <select id="selectByEnterprise" resultType="com.Lorrey.entity.Task">
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
+        from task
+        left join student on task.student_id = student.id
+        left join classes on task.class_id = classes.id
+        left join teacher on task.teacher_id = teacher.id
+        left join job on task.job_id = job.id
+        left join enterprise on task.enterprise_id = enterprise.id
+        left join apply on task.student_id = apply.stu_id
+        <where>
+            <if test="enterpriseId != null"> task.enterprise_id = #{enterpriseId}</if>
+            <if test="id != null"> and task.id= #{id}</if>
+            <if test="studentId != null"> and task.student_id = #{studentId}</if>
+            <if test="classId != null"> and task.class_id = #{classId}</if>
+            <if test="teacherId != null"> and task.teacher_id = #{teacherId}</if>
+            <if test="jobId != null"> and task.job_id = #{jobId}</if>
+            <if test="file != null"> and task.file= #{file}</if>
+            <if test="count != null"> and task.count= #{count}</if>
+            <if test="record != null"> and task.record= #{record}</if>
+            <if test="enterpriseRemark != null"> task.and enterprise_remark= #{enterpriseRemark}</if>
+            <if test="teacherRemark != null"> and task.teacher_remark= #{teacherRemark}</if>
+            <if test="report != null"> and task.report= #{report}</if>
+            <if test="self != null"> and task.self= #{self}</if>
+            <if test="grade != null"> and task.grade= #{grade}</if>
+        </where>
+    </select>
+
+    <select id="selectByTeacher" resultType="com.Lorrey.entity.Task">
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
+        from task
+        left join student on task.student_id = student.id
+        left join classes on task.class_id = classes.id
+        left join teacher on task.teacher_id = teacher.id
+        left join job on task.job_id = job.id
+        left join enterprise on task.enterprise_id = enterprise.id
+        left join apply on task.student_id = apply.stu_id
+        <where>
+            <if test="teacherId != null"> and task.teacher_id = #{teacherId}</if>
+            <if test="id != null"> and task.id= #{id}</if>
+            <if test="studentId != null"> and task.student_id = #{studentId}</if>
+            <if test="classId != null"> and task.class_id = #{classId}</if>
+            <if test="enterpriseId != null"> task.enterprise_id = #{enterpriseId}</if>
+            <if test="jobId != null"> and task.job_id = #{jobId}</if>
+            <if test="file != null"> and task.file= #{file}</if>
+            <if test="count != null"> and task.count= #{count}</if>
+            <if test="record != null"> and task.record= #{record}</if>
+            <if test="enterpriseRemark != null"> task.and enterprise_remark= #{enterpriseRemark}</if>
+            <if test="teacherRemark != null"> and task.teacher_remark= #{teacherRemark}</if>
+            <if test="report != null"> and task.report= #{report}</if>
+            <if test="self != null"> and task.self= #{self}</if>
+            <if test="grade != null"> and task.grade= #{grade}</if>
+        </where>
+    </select>
+
+    <select id="selectByStudent" resultType="com.Lorrey.entity.Task">
+        select task.*, student.name as studentName, classes.name as className, teacher.name as teacherName, job.name as jobName,enterprise.name as enterpriseName, apply.status as status
+        from task
+        left join student on task.student_id = student.id
+        left join classes on task.class_id = classes.id
+        left join teacher on task.teacher_id = teacher.id
+        left join job on task.job_id = job.id
+        left join enterprise on task.enterprise_id = enterprise.id
+        left join apply on task.student_id = apply.stu_id
+        <where>
+            <if test="studentId != null"> and task.student_id = #{studentId}</if>
+            <if test="id != null"> and task.id= #{id}</if>
+            <if test="teacherId != null"> and task.teacher_id = #{teacherId}</if>
+            <if test="classId != null"> and task.class_id = #{classId}</if>
+            <if test="enterpriseId != null"> task.enterprise_id = #{enterpriseId}</if>
+            <if test="jobId != null"> and task.job_id = #{jobId}</if>
+            <if test="file != null"> and task.file= #{file}</if>
+            <if test="count != null"> and task.count= #{count}</if>
+            <if test="record != null"> and task.record= #{record}</if>
+            <if test="enterpriseRemark != null"> task.and enterprise_remark= #{enterpriseRemark}</if>
+            <if test="teacherRemark != null"> and task.teacher_remark= #{teacherRemark}</if>
+            <if test="report != null"> and task.report= #{report}</if>
+            <if test="self != null"> and task.self= #{self}</if>
+            <if test="grade != null"> and task.grade= #{grade}</if>
+        </where>
     </select>
 
     <delete id="deleteById">
@@ -86,6 +172,7 @@
                 <if test="classId != null">class_id,</if>
                 <if test="teacherId != null">teacher_id,</if>
                 <if test="jobId != null">job_id,</if>
+                <if test="enterpriseId != null">enterprise_id,</if>
                 <if test="file != null">file,</if>
                 <if test="count != null">count,</if>
                 <if test="record != null">record,</if>
@@ -101,6 +188,7 @@
                 <if test="classId != null">#{classId},</if>
                 <if test="teacherId != null">#{teacherId},</if>
                 <if test="jobId != null">#{jobId},</if>
+                <if test="enterpriseId != null">#{enterpriseId},</if>
                 <if test="file != null">#{file},</if>
                 <if test="count != null">#{count},</if>
                 <if test="record != null">#{record},</if>
@@ -113,10 +201,10 @@
     </insert>
 
     <insert id="batchAdd" parameterType="java.util.List">
-        INSERT INTO task (student_id, class_id, teacher_id, job_id)
+        INSERT INTO task (student_id, class_id, teacher_id, job_id, enterprise_id)
         VALUES
         <foreach item="item" index="index" collection="list" separator=",">
-            (#{item.studentId}, #{item.classId}, #{item.teacherId}, #{item.jobId})
+            (#{item.studentId}, #{item.classId}, #{item.teacherId}, #{item.jobId}, #{item.enterpriseId})
         </foreach>
     </insert>
 
@@ -134,6 +222,9 @@
             </if>
             <if test="jobId != null">
                 job_id = #{jobId},
+            </if>
+            <if test="enterpriseId != null">
+                enterprise_id = #{enterpriseId},
             </if>
             <if test="file != null">
                 file= #{file},

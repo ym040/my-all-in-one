@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="operation"  v-if="user.role === 'TEACHER'">
+    <div class="operation"  v-if="user.role !== 'STUDENT'">
       <el-select v-model="selectedGrade" placeholder="请选择成绩">
         <el-option label="优秀" value="优秀"></el-option>
         <el-option label="不合格" value="不合格"></el-option>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="table">
-      <el-table :data="user.role === 'STUDENT' || user.role === 'TEACHER' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
+      <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="studentId" label="学生ID"></el-table-column>
@@ -23,6 +23,7 @@
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="指导老师"></el-table-column>
         <el-table-column prop="jobName" label="岗位"></el-table-column>
+        <el-table-column prop="enterpriseName" label="公司名称"></el-table-column>
         <el-table-column prop="file" label="三方协议">
           <template v-slot="scope">
             <el-button v-if="scope.row.file" type="text" @click="viewFile(scope.row.file)">下载</el-button>
@@ -87,6 +88,7 @@
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="教师"></el-table-column>
         <el-table-column prop="jobName" label="岗位"></el-table-column>
+        <el-table-column prop="enterpriseName" label="公司名称"></el-table-column>
       </el-table>
 
       <div slot="footer" class="dialog-footer">
@@ -111,6 +113,9 @@
         </el-form-item>
         <el-form-item label="岗位" prop="jobName">
           <el-input v-model="form.jobName" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="公司名称" prop="enterpriseName">
+          <el-input v-model="form.enterpriseName" disabled></el-input>
         </el-form-item>
         <el-form-item label="三方协议" prop="file">
           <el-upload
@@ -191,53 +196,14 @@ export default {
       ids: [],
       studentData: [],
       selectedStudents: [],  // 用于存储选中的学生
-      selfData: [], // 新增selfData来存储学生用户的数据
       selectedGrade: '', // 新增状态
     };
   },
   created() {
-    if (this.user.role === 'STUDENT') {
-      this.loadSelfData();
-    } else if (this.user.role === 'TEACHER') {
-      this.loadTeacherSelfData();
-    } else {
       this.load(1);
       this.loadStudent();
-    }
   },
   methods: {
-    loadSelfData() {
-      this.$request.get('/task/selectByStuId', {
-        params: {
-          stuId: this.user.id
-        }
-      }).then(res => {
-        console.log(res);
-        if (res.code === '200') {
-          this.selfData = [res.data];
-          this.total = res.data ? 1 : 0;
-        } else {
-          this.$message.error(res.msg);
-        }
-      });
-    },
-
-    loadTeacherSelfData() {
-      this.$request.get('/task/selectByTeacherId', {
-        params: {
-          teacherId: this.user.id
-        }
-      }).then(res => {
-        if (res.code === '200') {
-          this.selfData = res.data;
-          console.log(this.selfData)
-          this.total = res.data?.total
-        } else {
-          this.$message.error(res.msg);
-        }
-      });
-    },
-
     loadStudent() {
       this.$request.get('/apply/selectAll').then(res => {
         if (res.code === '200') {
@@ -291,6 +257,7 @@ export default {
           classId: student.classId,
           teacherId: teacherInfo.teacherId,
           jobId: student.jobId,
+          enterpriseId: student.enterpriseId,
         };
       });
 
@@ -340,13 +307,7 @@ export default {
           }).then(res => {
             if (res.code === '200') {
               this.$message.success('保存成功');
-              if (this.user.role === 'STUDENT') {
-                this.loadSelfData()
-              } else if (this.user.role === 'TEACHER') {
-                this.loadTeacherSelfData()
-              } else {
-                this.load(1)
-              }
+              this.load(1)
               this.fromVisible = false;
               this.editVisible = false;
             } else {
@@ -391,16 +352,52 @@ export default {
     },
     load(pageNum) {
       if (pageNum) this.pageNum = pageNum;
-      this.$request.get('/task/selectPage', {
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          username: this.username,
-        }
-      }).then(res => {
-        this.tableData = res.data?.list;
-        this.total = res.data?.total;
-      });
+      if (this.user.role === 'ENTERPRISE') {
+        this.$request.get('/task/selectByEnterprise', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            enterpriseId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
+      } else if (this.user.role === 'TEACHER') {
+        this.$request.get('/task/selectByTeacher', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            teacherId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
+      } else if (this.user.role === 'STUDENT') {
+        this.$request.get('/task/selectByStudent', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            studentId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
+      } else {
+        this.$request.get('/task/selectPage', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            username: this.username,
+          }
+        }).then(res => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
+      }
+
     },
     reset() {
       this.username = null;

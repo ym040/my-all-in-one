@@ -13,15 +13,15 @@
         from job
         left join enterprise on job.enterprise_id = enterprise.id
         <where>
-            <if test="id != null"> and id= #{id}</if>
-            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
-            <if test="direction != null"> and direction= #{direction}</if>
-            <if test="count != null"> and count= #{count}</if>
-            <if test="salary != null"> and salary= #{salary}</if>
-            <if test="jobDescribe != null"> and job_describe= #{jobDescribe}</if>
-            <if test="jobRequire != null"> and job_require= #{jobRequire}</if>
-            <if test="address != null"> and address= #{address}</if>
-            <if test="workTime != null"> and work_time= #{workTime}</if>
+            <if test="id != null"> and job.id= #{id}</if>
+            <if test="name != null"> and job.name like concat('%', #{name}, '%')</if>
+            <if test="direction != null"> and job.direction= #{direction}</if>
+            <if test="count != null"> and job.count= #{count}</if>
+            <if test="salary != null"> and job.salary= #{salary}</if>
+            <if test="jobDescribe != null"> and job.job_describe= #{jobDescribe}</if>
+            <if test="jobRequire != null"> and job.job_require= #{jobRequire}</if>
+            <if test="address != null"> and job.address= #{address}</if>
+            <if test="workTime != null"> and job.work_time= #{workTime}</if>
         </where>
         order by id desc
     </select>

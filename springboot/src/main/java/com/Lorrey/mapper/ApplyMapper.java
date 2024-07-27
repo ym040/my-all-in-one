@@ -60,4 +60,19 @@ public interface ApplyMapper {
      * 根据教师ID查询
      */
     List<Apply> selectByTeacherId(Integer teacherId);
+
+    /**
+     * 企业分页查询
+     */
+    List<Apply> selectEnterprise(Apply apply);
+
+    /**
+     * 教师分页查询
+     */
+    List<Apply> selectByTeacher(Apply apply);
+
+    /**
+     * 学生分页查询
+     */
+    List<Apply> selectByStudent(Apply apply);
 }

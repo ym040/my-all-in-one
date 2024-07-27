@@ -98,5 +98,32 @@ public class TaskService {
     public List<Task> selectByTeacherId(Integer teacherId) {
         return taskMapper.selectByTeacherId(teacherId);
     }
+
+    /**
+     * 企业分页查询
+     */
+    public PageInfo<Task> selectByEnterprise(Task task, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Task> list = taskMapper.selectByEnterprise(task);
+        return PageInfo.of(list);
+    }
+
+    /**
+     * 教师分页查询
+     */
+    public PageInfo<Task> selectByTeacher(Task task, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Task> list = taskMapper.selectByTeacher(task);
+        return PageInfo.of(list);
+    }
+
+    /**
+     * 学生分页查询
+     */
+    public PageInfo<Task> selectByStudent(Task task, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Task> list = taskMapper.selectByStudent(task);
+        return PageInfo.of(list);
+    }
 }
 

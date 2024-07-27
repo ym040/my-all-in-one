@@ -113,5 +113,32 @@ public class ApplyService {
     public List<Apply> selectByTeacherId(Integer teacherId) {
         return applyMapper.selectByTeacherId(teacherId);
     }
+
+    /**
+     * 企业分页查询
+     */
+    public PageInfo<Apply> selectEnterprise(Apply apply, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Apply> list = applyMapper.selectEnterprise(apply);
+        return PageInfo.of(list);
+    }
+
+    /**
+     * 教师分页查询
+     */
+    public PageInfo<Apply> selectByTeacher(Apply apply, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Apply> list = applyMapper.selectByTeacher(apply);
+        return PageInfo.of(list);
+    }
+
+    /**
+     * 学生分页查询
+     */
+    public PageInfo<Apply> selectByStudent(Apply apply, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Apply> list = applyMapper.selectByStudent(apply);
+        return PageInfo.of(list);
+    }
 }
 

@@ -21,6 +21,8 @@ public class Task implements Serializable {
     private Integer teacherId;
     /** 岗位ID */
     private Integer jobId;
+    /** 企业ID */
+    private Integer enterpriseId;
     /** 三方协议 */
     private String file;
     /** 签到次数 */
@@ -44,6 +46,7 @@ public class Task implements Serializable {
     private String className;
     private String teacherName;
     private String jobName;
+    private String enterpriseName;
     private String status;
 
 

@@ -53,4 +53,19 @@ public interface TaskMapper {
      * 根据教师ID查询
      */
     List<Task> selectByTeacherId(Integer teacherId);
+
+    /**
+     * 企业分页查询
+     */
+    List<Task> selectByEnterprise(Task task);
+
+    /**
+     * 教师分页查询
+     */
+    List<Task> selectByTeacher(Task task);
+
+    /**
+     * 学生分页查询
+     */
+    List<Task> selectByStudent(Task task);
 }

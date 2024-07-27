@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="search" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">
+    <div class="search" v-if="user.role !== 'STUDENT'">
       <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="table">
-      <el-table :data="user.role === 'STUDENT' || user.role === 'TEACHER' ? selfData : tableData" stripe @selection-change="handleSelectionChange">
+      <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="stuId" label="学生ID"></el-table-column>
@@ -48,7 +48,7 @@
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
-            <el-button size="mini" plain @click="handleView(scope.row)" v-if="user.role !== 'STUDENT'">查看</el-button>
+            <el-button size="mini" plain @click="handleView(scope.row)" v-if="user.role === 'TEACHER' || user.role === 'ADMIN'">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -155,7 +155,6 @@ export default {
   data() {
     return {
       tableData: [],  // 所有的数据
-      selfData: [],   // 自己的数据
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
@@ -182,13 +181,7 @@ export default {
     }
   },
   created() {
-    if (this.user.role === 'STUDENT') {
-      this.loadSelfData();
-    } else if (this.user.role === 'TEACHER') {
-      this.loadTeacherSelfData();
-    } else {
-      this.load(1);
-    }
+    this.load(1);
     this.loadTeachers();
     this.loadClasses();
     this.loadEnterprise();
@@ -269,13 +262,7 @@ export default {
           }).then(res => {
             if (res.code === '200') {  // 表示成功保存
               this.$message.success('保存成功')
-              if (this.user.role === 'STUDENT') {
-                this.loadSelfData()
-              } else if (this.user.role === 'TEACHER') {
-                this.loadTeacherSelfData()
-              } else {
-                this.load(1)
-              }
+              this.load(1)
               this.fromVisible = false
             } else {
               this.$message.error(res.msg)  // 弹出错误的信息
@@ -319,44 +306,54 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/apply/selectPage', {
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          username: this.username,
-        }
-      }).then(res => {
-        this.tableData = res.data?.list
-        this.total = res.data?.total
-      })
-    },
-    loadSelfData() {
-      this.$request.get(`/apply/selectByStuId`, {
-        params: {
-          stuId: this.user.id
-        }
-      }).then(res => {
-        if (res.code === '200') {
-          this.selfData = [res.data];
-          this.total = res.data ? 1 : 0;
-        } else {
-          this.$message.error(res.msg);
-        }
-      })
-    },
-    loadTeacherSelfData() {
-      this.$request.get(`/apply/selectByTeacherId`, {
-        params: {
-          teacherId: this.user.id
-        }
-      }).then(res => {
-        if (res.code === '200') {
-          this.selfData = res.data
+      if (this.user.role === 'ENTERPRISE') {
+        this.$request.get('/apply/selectEnterprise', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            username: this.username,
+            enterpriseId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list
           this.total = res.data?.total
-        } else {
-          this.$message.error(res.msg);
-        }
-      })
+        })
+      } else if (this.user.role === 'TEACHER') {
+        this.$request.get('/apply/selectByTeacher', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            username: this.username,
+            teacherId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
+      } else if (this.user.role === 'STUDENT') {
+        this.$request.get('/apply/selectByStudent', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            username: this.username,
+            stuId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list;
+          this.total = res.data?.total;
+        });
+      } else {
+        this.$request.get('/apply/selectPage', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            username: this.username,
+          }
+        }).then(res => {
+          this.tableData = res.data?.list
+          this.total = res.data?.total
+        })
+      }
 
     },
     reset() {

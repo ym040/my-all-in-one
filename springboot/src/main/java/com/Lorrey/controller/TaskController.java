@@ -37,6 +37,7 @@ public class TaskController {
      */
     @PostMapping("/batchAdd")
     public Result batchAdd(@RequestBody List<Task> tasks) {
+        System.out.println(tasks);
         taskService.batchAdd(tasks);
         return Result.success();
     }
@@ -121,6 +122,39 @@ public class TaskController {
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Task> page = taskService.selectPage(task, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 企业分页查询
+     */
+    @GetMapping("/selectByEnterprise")
+    public Result selectByEnterprise(Task task,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Task> page = taskService.selectByEnterprise(task, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 教师分页查询
+     */
+    @GetMapping("/selectByTeacher")
+    public Result selectByTeacher(Task task,
+                                     @RequestParam(defaultValue = "1") Integer pageNum,
+                                     @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Task> page = taskService.selectByTeacher(task, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 学生分页查询
+     */
+    @GetMapping("/selectByStudent")
+    public Result selectByStudent(Task task,
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Task> page = taskService.selectByStudent(task, pageNum, pageSize);
         return Result.success(page);
     }
 

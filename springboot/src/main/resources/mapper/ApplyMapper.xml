@@ -16,17 +16,17 @@
         left join enterprise on apply.enterprise_id = enterprise.id
         left join job on apply.job_id = job.id
         <where>
-            <if test="id != null"> and id= #{id}</if>
-            <if test="stuId != null"> and stu_id= #{stuId}</if>
-            <if test="username != null"> and username like concat('%', #{username}, '%')</if>
-            <if test="name != null"> and name = #{name}</if>
-            <if test="phone != null"> and phone= #{phone}</if>
-            <if test="salary != null"> and salary= #{salary}</if>
-            <if test="address != null"> and address= #{address}</if>
-            <if test="beginTime != null"> and begin_time= #{beginTime}</if>
-            <if test="endTime != null"> and end_time= #{endTime}</if>
-            <if test="status != null"> and status= #{status}</if>
-            <if test="readStatus != null"> and read= #{readStatus}</if>
+            <if test="id != null"> and apply.id= #{id}</if>
+            <if test="stuId != null"> and apply.stu_id= #{stuId}</if>
+            <if test="username != null"> and apply.username like concat('%', #{username}, '%')</if>
+            <if test="name != null"> and apply.name = #{name}</if>
+            <if test="phone != null"> and apply.phone= #{phone}</if>
+            <if test="salary != null"> and apply.salary= #{salary}</if>
+            <if test="address != null"> and apply.address= #{address}</if>
+            <if test="beginTime != null"> and apply.begin_time= #{beginTime}</if>
+            <if test="endTime != null"> and apply.end_time= #{endTime}</if>
+            <if test="status != null"> and apply.status= #{status}</if>
+            <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
         </where>
     </select>
 
@@ -55,6 +55,74 @@
                  left join enterprise on apply.enterprise_id = enterprise.id
                  left join job on apply.job_id = job.id
         where apply.teacher_id = #{teacherId}
+    </select>
+
+    <select id="selectEnterprise" resultType="com.Lorrey.entity.Apply">
+        select apply.*, classes.name as className, teacher.name as teacherName, enterprise.name as enterpriseName, job.name as jobName
+        from apply
+        left join classes on apply.class_id = classes.id
+        left join teacher on apply.teacher_id = teacher.id
+        left join enterprise on apply.enterprise_id = enterprise.id
+        left join job on apply.job_id = job.id
+        <where>
+            <if test="enterpriseId != null"> and apply.enterprise_id = #{enterpriseId}</if>
+            <if test="id != null"> and apply.id= #{id}</if>
+            <if test="stuId != null"> and apply.stu_id= #{stuId}</if>
+            <if test="username != null"> and apply.username like concat('%', #{username}, '%')</if>
+            <if test="name != null"> and apply.name = #{name}</if>
+            <if test="phone != null"> and apply.phone= #{phone}</if>
+            <if test="salary != null"> and apply.salary= #{salary}</if>
+            <if test="address != null"> and apply.address= #{address}</if>
+            <if test="beginTime != null"> and apply.begin_time= #{beginTime}</if>
+            <if test="endTime != null"> and apply.end_time= #{endTime}</if>
+            <if test="status != null"> and apply.status= #{status}</if>
+            <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectByTeacher" resultType="com.Lorrey.entity.Apply">
+        select apply.*, classes.name as className, teacher.name as teacherName, enterprise.name as enterpriseName, job.name as jobName
+        from apply
+        left join classes on apply.class_id = classes.id
+        left join teacher on apply.teacher_id = teacher.id
+        left join enterprise on apply.enterprise_id = enterprise.id
+        left join job on apply.job_id = job.id
+        <where>
+            <if test="teacherId != null"> and apply.teacher_id = #{teacherId}</if>
+            <if test="id != null"> and apply.id= #{id}</if>
+            <if test="stuId != null"> and apply.stu_id= #{stuId}</if>
+            <if test="username != null"> and apply.username like concat('%', #{username}, '%')</if>
+            <if test="name != null"> and apply.name = #{name}</if>
+            <if test="phone != null"> and apply.phone= #{phone}</if>
+            <if test="salary != null"> and apply.salary= #{salary}</if>
+            <if test="address != null"> and apply.address= #{address}</if>
+            <if test="beginTime != null"> and apply.begin_time= #{beginTime}</if>
+            <if test="endTime != null"> and apply.end_time= #{endTime}</if>
+            <if test="status != null"> and apply.status= #{status}</if>
+            <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectByStudent" resultType="com.Lorrey.entity.Apply">
+        select apply.*, classes.name as className, teacher.name as teacherName, enterprise.name as enterpriseName, job.name as jobName
+        from apply
+        left join classes on apply.class_id = classes.id
+        left join teacher on apply.teacher_id = teacher.id
+        left join enterprise on apply.enterprise_id = enterprise.id
+        left join job on apply.job_id = job.id
+        <where>
+            <if test="stuId != null"> and apply.stu_id= #{stuId}</if>
+            <if test="id != null"> and apply.id= #{id}</if>
+            <if test="username != null"> and apply.username like concat('%', #{username}, '%')</if>
+            <if test="name != null"> and apply.name = #{name}</if>
+            <if test="phone != null"> and apply.phone= #{phone}</if>
+            <if test="salary != null"> and apply.salary= #{salary}</if>
+            <if test="address != null"> and apply.address= #{address}</if>
+            <if test="beginTime != null"> and apply.begin_time= #{beginTime}</if>
+            <if test="endTime != null"> and apply.end_time= #{endTime}</if>
+            <if test="status != null"> and apply.status= #{status}</if>
+            <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+        </where>
     </select>
 
 
