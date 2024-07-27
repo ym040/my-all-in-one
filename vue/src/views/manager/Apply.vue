@@ -257,6 +257,11 @@ export default {
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          // 在保存之前检查并更新读取状态
+          if (this.form.readStatus === 2) {
+            this.form.readStatus = 1; // 如果当前是已读状态，则改为未读
+          }
+
           this.$request({
             url: this.form.id ? '/apply/update' : '/apply/add',
             method: this.form.id ? 'PUT' : 'POST',
@@ -266,6 +271,8 @@ export default {
               this.$message.success('保存成功')
               if (this.user.role === 'STUDENT') {
                 this.loadSelfData()
+              } else if (this.user.role === 'TEACHER') {
+                this.loadTeacherSelfData()
               } else {
                 this.load(1)
               }
@@ -385,7 +392,7 @@ export default {
       // 更新读取状态为已读
       if (row.readStatus === 1) {  // 如果是未读状态
         row.readStatus = 2;  // 更新为已读状态
-        console.log(row.readStatus)
+        //console.log(row.readStatus)
         this.updateReadStatus(row).then(() => {
           this.$message.success('读取状态更新成功');
         }).catch(error => {

@@ -29,7 +29,7 @@
             <span v-else>无</span>
           </template>
         </el-table-column>
-        <el-table-column prop="count" label="签到次数"></el-table-column>
+<!--        <el-table-column prop="count" label="签到次数"></el-table-column>-->
         <el-table-column prop="record" label="周志">
           <template v-slot="scope">
             <el-button v-if="scope.row.record" type="text" @click="viewFile(scope.row.record)">下载</el-button>
@@ -60,8 +60,8 @@
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT' && scope.row.status === '实习中'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
-            <el-button size="mini" type="success" plain @click="checkIn(scope.row)" v-if="user.role === 'STUDENT'">签到</el-button>
-            <el-button size="mini" type="success" plain  v-if="user.role === 'TEACHER' || user.role === 'ENTERPRISE'">评价</el-button>
+<!--            <el-button size="mini" type="success" plain @click="checkIn(scope.row)" v-if="user.role === 'STUDENT'">签到</el-button>-->
+            <el-button size="mini" type="success" plain @click="evaluate(scope.row)"  v-if="user.role === 'TEACHER' || user.role === 'ENTERPRISE'">评价</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -117,6 +117,7 @@
               :action="$baseUrl + '/files/upload'"
               :show-file-list="false"
               :on-success="handleFileSuccessForFile"
+              v-if="user.role === 'STUDENT'"
           >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -127,10 +128,25 @@
               :action="$baseUrl + '/files/upload'"
               :show-file-list="false"
               :on-success="handleFileSuccessForRecord"
+              v-if="user.role === 'STUDENT'"
           >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
           <el-input v-model="form.record" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="实践报告" prop="report">
+          <el-upload
+              :action="$baseUrl + '/files/upload'"
+              :show-file-list="false"
+              :on-success="handleFileSuccessForReport"
+              v-if="user.role === 'STUDENT'"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+          <el-input v-model="form.report" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="自我鉴定" prop="self">
+          <el-input type="textarea" v-model="form.self" rows="4" placeholder="请输入自我鉴定" :disabled="user.role !== 'STUDENT' && user.role !== 'ADMIN'"></el-input>
         </el-form-item>
         <el-form-item label="企业评价" prop="enterpriseRemark">
           <el-input type="textarea" v-model="form.enterpriseRemark" rows="4" placeholder="请输入企业评价" :disabled="user.role !== 'ENTERPRISE' && user.role !== 'ADMIN'"></el-input>
@@ -138,26 +154,13 @@
         <el-form-item label="教师评价" prop="teacherRemark">
           <el-input type="textarea" v-model="form.teacherRemark" rows="4" placeholder="请输入教师评价" :disabled="user.role !== 'TEACHER' && user.role !== 'ADMIN'"></el-input>
         </el-form-item>
-        <el-form-item label="自我鉴定" prop="self">
-          <el-input type="textarea" v-model="form.self" rows="4" placeholder="请输入自我鉴定" :disabled="user.role !== 'STUDENT' && user.role !== 'ADMIN'"></el-input>
-        </el-form-item>
-        <el-form-item label="成绩鉴定" prop="grade">
+        <el-form-item label="成绩鉴定" prop="grade" v-if="user.role === 'TEACHER'">
           <el-select v-model="form.grade" placeholder="请选择成绩" :disabled="user.role !== 'TEACHER' && user.role !== 'ADMIN'">
             <el-option label="优秀" value="优秀"></el-option>
             <el-option label="良好" value="良好"></el-option>
             <el-option label="中等" value="中等"></el-option>
             <el-option label="不合格" value="不合格"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="实践报告" prop="report">
-          <el-upload
-              :action="$baseUrl + '/files/upload'"
-              :show-file-list="false"
-              :on-success="handleFileSuccessForReport"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-          </el-upload>
-          <el-input v-model="form.report" disabled></el-input>
         </el-form-item>
       </el-form>
 
@@ -337,7 +340,13 @@ export default {
           }).then(res => {
             if (res.code === '200') {
               this.$message.success('保存成功');
-              this.load(1);
+              if (this.user.role === 'STUDENT') {
+                this.loadSelfData()
+              } else if (this.user.role === 'TEACHER') {
+                this.loadTeacherSelfData()
+              } else {
+                this.load(1)
+              }
               this.fromVisible = false;
               this.editVisible = false;
             } else {
@@ -413,15 +422,27 @@ export default {
         }
       });
     },
-    checkIn(row) {
+    /*checkIn(row) {
       // 此处需要调用后端接口或直接更新前端数据，将对应行的签到次数加一
       const updatedRow = { ...row };
       updatedRow.count += 1; // 将签到次数加一
 
       // 调用保存方法或直接更新表格数据
       this.saveCheckIn(updatedRow); // 可能需要保存到后端
+    },*/
+    evaluate(row){
+      if (row.status === '实习中') {
+        this.form = JSON.parse(JSON.stringify(row));
+        // 自动设置指导老师
+        this.getTeacherByClassId(this.form.classId).then(teacherInfo => {
+          this.form.teacherName = teacherInfo.teacherName;
+          this.editVisible = true;
+        });
+      } else {
+        this.$message.error('只有状态为实习中的任务可以评价');
+      }
     },
-    saveCheckIn(row) {
+    /*saveCheckIn(row) {
       // 调用后端接口保存签到次数
       this.$request.put('/task/update', row).then(res => {
         if (res.code === '200') {
@@ -438,7 +459,7 @@ export default {
       }).catch(err => {
         this.$message.error('签到失败');
       });
-    },
+    },*/
     searchByGrade() {
       if (this.selectedGrade) {
         this.$request.get('/task/selectByGrade', {

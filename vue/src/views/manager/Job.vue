@@ -189,16 +189,31 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/job/selectPage', {
-        params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          name: this.name,
-        }
-      }).then(res => {
-        this.tableData = res.data?.list
-        this.total = res.data?.total
-      })
+      if (this.user.role === 'ENTERPRISE') {
+        this.$request.get('/job/selectByEnterpriseId', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            name: this.name,
+            enterpriseId: this.user.id
+          }
+        }).then(res => {
+          this.tableData = res.data?.list
+          this.total = res.data?.total
+        })
+      } else {
+        this.$request.get('/job/selectPage', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            name: this.name,
+          }
+        }).then(res => {
+          this.tableData = res.data?.list
+          this.total = res.data?.total
+        })
+      }
+
     },
     reset() {
       this.name = null

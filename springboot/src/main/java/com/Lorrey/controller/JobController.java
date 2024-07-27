@@ -74,15 +74,6 @@ public class JobController {
     }
 
     /**
-     * 根据企业查询
-     */
-    @GetMapping("/selectByEnterpriseId/{enterpriseId}")
-    public Result selectByEnterpriseId(@PathVariable Integer enterpriseId) {
-        List<Job> list = jobService.selectByEnterpriseId(enterpriseId);
-        return Result.success(list);
-    }
-
-    /**
      * 分页查询
      */
     @GetMapping("/selectPage")
@@ -90,6 +81,17 @@ public class JobController {
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Job> page = jobService.selectPage(job, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 根据企业ID查询 + 企业名称模糊查询
+     */
+    @GetMapping("/selectByEnterpriseId")
+    public Result selectByEnterpriseId(Job job,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Job> page = jobService.selectByEnterpriseId(job, pageNum, pageSize);
         return Result.success(page);
     }
 

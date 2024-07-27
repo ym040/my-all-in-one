@@ -71,10 +71,13 @@ public class JobService {
         return PageInfo.of(list);
     }
 
+
     /**
-     * 根据企业查询
+     * 根据企业ID查询 + 企业名称模糊查询
      */
-    public List<Job> selectByEnterpriseId(Integer enterpriseId) {
-        return jobMapper.selectByEnterpriseId(enterpriseId);
+    public PageInfo<Job> selectByEnterpriseId(Job job, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Job> list = jobMapper.selectByEnterpriseId(job);
+        return PageInfo.of(list);
     }
 }
