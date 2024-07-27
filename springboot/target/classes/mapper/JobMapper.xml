@@ -26,18 +26,32 @@
         order by id desc
     </select>
 
+    <select id="selectByEnterpriseId" resultType="com.Lorrey.entity.Job">
+        select job.*, enterprise.name as enterpriseName
+        from job
+        left join enterprise on job.enterprise_id = enterprise.id
+        <where>
+            <if test="enterpriseId != null">and job.enterprise_id = #{enterpriseId}</if>
+            <if test="name != null">and job.name like concat('%', #{name}, '%')</if>
+            <if test="direction != null">and job.direction = #{direction}</if>
+            <if test="count != null">and job.count = #{count}</if>
+            <if test="salary != null">and job.salary = #{salary}</if>
+            <if test="jobDescribe != null">and job.job_describe = #{jobDescribe}</if>
+            <if test="jobRequire != null">and job.job_require = #{jobRequire}</if>
+            <if test="address != null">and job.address = #{address}</if>
+            <if test="workTime != null">and job.work_time = #{workTime}</if>
+        </where>
+        order by job.id desc
+    </select>
+
+
+
+
     <select id="selectById" resultType="com.Lorrey.entity.Job">
         select
         <include refid="Base_Column_List" />
         from job
         where id = #{id}
-    </select>
-
-    <select id="selectByEnterpriseId" resultType="com.Lorrey.entity.Job">
-        select
-        <include refid="Base_Column_List" />
-        from job
-        where enterprise_id = #{enterpriseId}
     </select>
 
     <delete id="deleteById">
