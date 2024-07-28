@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Lorrey.mapper.ResumeMapper">
+
+    <sql id="Base_Column_List">
+        id,student_id,name,tel,email,gender,status,city,department,salary,person,education,project,skills,honor    </sql>
+
+    <select id="selectAll" resultType="com.Lorrey.entity.Resume">
+        select resume.*, student.name as studentName
+        from resume
+        left join student on resume.student_id = student.id
+        <where>
+            <if test="id != null"> and resume.id= #{id}</if>
+            <if test="studentId != null"> and resume.student_id = #{studentId}</if>
+            <if test="name != null"> and resume.name like concat('%', #{name}, '%')</if>
+            <if test="tel != null"> and resume.tel = #{tel}</if>
+            <if test="email != null"> and resume.email = #{email}</if>
+            <if test="gender != null"> and resume.gender = #{gender}</if>
+            <if test="status != null"> and resume.status = #{status}</if>
+            <if test="city != null"> and resume.city = #{city}</if>
+            <if test="department != null"> and resume.department = #{department}</if>
+            <if test="salary != null"> and resume.salary = #{salary}</if>
+            <if test="person != null"> and resume.person = #{person}</if>
+            <if test="education != null"> and resume.education = #{education}</if>
+            <if test="project != null"> and resume.project = #{project}</if>
+            <if test="skills != null"> and resume.skills = #{skills}</if>
+            <if test="honor != null"> and resume.honor = #{honor}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.Lorrey.entity.Resume">
+        select
+        <include refid="Base_Column_List" />
+        from resume
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from resume
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.Lorrey.entity.Resume" useGeneratedKeys="true">
+        insert into resume
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="studentId != null">student_id,</if>
+            <if test="name != null">name,</if>
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="gender != null">gender,</if>
+            <if test="status != null">status,</if>
+            <if test="city != null">city,</if>
+            <if test="department != null">department,</if>
+            <if test="salary != null">salary,</if>
+            <if test="person != null">person</if>
+            <if test="education != null">education</if>
+            <if test="project != null">project</if>
+            <if test="skills != null">skills</if>
+            <if test="honor != null">honor</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="studentId != null">#{studentId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="status != null">#{status},</if>
+            <if test="city != null">#{city},</if>
+            <if test="department != null">#{department},</if>
+            <if test="salary != null">#{salary},</if>
+            <if test="person != null">#{person},</if>
+            <if test="education != null">#{education},</if>
+            <if test="project != null">#{project},</if>
+            <if test="skills != null">#{skills},</if>
+            <if test="honor != null">#{honor},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.Lorrey.entity.Resume">
+        update resume
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="department != null">
+                department = #{department},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="person != null">
+                person = #{person},
+            </if>
+            <if test="education != null">
+                education = #{education},
+            </if>
+            <if test="project != null">
+                project = #{project},
+            </if>
+            <if test="skills != null">
+                skills = #{skills},
+            </if>
+            <if test="honor != null">
+                honor = #{honor},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

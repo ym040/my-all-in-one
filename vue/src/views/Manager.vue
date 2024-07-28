@@ -45,6 +45,7 @@
             <el-menu-item index="/notice" v-if="user.role === 'ADMIN'">公告信息</el-menu-item>
             <el-menu-item index="/workPlan" v-if="user.role === 'ADMIN'">实习安排信息</el-menu-item>
             <el-menu-item index="/job">岗位信息</el-menu-item>
+            <el-menu-item index="/resume">简历信息</el-menu-item>
           </el-submenu>
           <el-submenu index="administration" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">
             <template slot="title">
