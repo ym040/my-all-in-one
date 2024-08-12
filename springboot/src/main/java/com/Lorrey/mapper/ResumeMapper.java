@@ -39,4 +39,9 @@ public interface ResumeMapper {
      * 根据企业ID查询 + 企业名称模糊查询
      */
     List<Resume> selectByEnterpriseId(Resume resume);
+
+    /**
+     * 根据学生ID查询
+     */
+    Resume selectByStudentId(Integer studentId);
 }

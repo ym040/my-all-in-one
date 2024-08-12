@@ -28,6 +28,7 @@ const routes = [
       { path: 'workPlan', name: 'WorkPlan', meta: { name: '实习安排信息' }, component: () => import('../views/manager/WorkPlan') },
       { path: 'job', name: 'Job', meta: { name: '岗位信息' }, component: () => import('../views/manager/Job') },
       { path: 'resume', name: 'Resume', meta: { name: '简历信息' }, component: () => import('../views/manager/Resume')},
+      { path: 'myResume', name: 'MyResume', meta: { name: '我的简历' }, component: () => import('../views/manager/MyResume.vue')},
       { path: 'college', name: 'College', meta: { name: '学院信息' }, component: () => import('../views/manager/College') },
       { path: 'speciality', name: 'Speciality', meta: { name: '专业信息' }, component: () => import('../views/manager/Speciality') },
       { path: 'classes', name: 'Classes', meta: { name: '班级信息' }, component: () => import('../views/manager/Classes') },

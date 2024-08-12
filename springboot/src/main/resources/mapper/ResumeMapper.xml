@@ -38,6 +38,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectByStudentId" resultType="com.Lorrey.entity.Resume">
+        select
+        <include refid="Base_Column_List" />
+        from resume
+        where student_id = #{studentId}
+    </select>
+
     <delete id="deleteById">
         delete from resume
         where  id = #{id}

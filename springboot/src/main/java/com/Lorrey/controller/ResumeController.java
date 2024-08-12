@@ -65,6 +65,15 @@ public class ResumeController {
     }
 
     /**
+     * 根据学生ID查询
+     */
+    @GetMapping("/selectByStudentId/{studentId}")
+    public Result selectByStudentId(@PathVariable Integer studentId) {
+        Resume resume = resumeService.selectByStudentId(studentId);
+        return Result.success(resume);
+    }
+
+    /**
      * 查询所有
      */
     @GetMapping("/selectAll")

@@ -55,6 +55,9 @@
 
     <el-dialog title="简历信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
+        <el-form-item label="学生ID" prop="name">
+          <el-input v-model="form.studentId" placeholder="学生ID"></el-input>
+        </el-form-item>
         <el-form-item label="姓名" prop="name">
           <el-input v-model="form.name" placeholder="姓名"></el-input>
         </el-form-item>
@@ -99,7 +102,7 @@
           <el-input v-model="form.project" placeholder="项目经历"></el-input>
         </el-form-item>
         <el-form-item label="技能及证书" prop="field120">
-          <el-input v-model="form.field120" placeholder="技能及证书"></el-input>
+          <el-input v-model="form.skills" placeholder="技能及证书"></el-input>
         </el-form-item>
         <el-form-item label="荣誉奖项" prop="honor">
           <el-input v-model="form.honor" placeholder="荣誉奖项"></el-input>

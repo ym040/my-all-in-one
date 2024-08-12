@@ -1,137 +1,196 @@
 <template>
-  <div class="resume">
-    <el-card class="resume-card">
-      <h2>{{ resume.name }}</h2>
-      <p><strong>电话:</strong> {{ resume.tel }}</p>
-      <p><strong>邮箱:</strong> {{ resume.email }}</p>
-      <p><strong>现居城市:</strong> {{ resume.address }}</p>
-      <p><strong>性别:</strong> {{ getGenderLabel(resume.gender) }}</p>
-      <p><strong>求职意向:</strong> {{ resume.job }}</p>
-      <p><strong>当前状态:</strong> {{ getStatusLabel(resume.status) }}</p>
-      <p><strong>意向城市:</strong> {{ resume.city }}</p>
-      <p><strong>期望职位:</strong> {{ resume.department }}</p>
-      <p><strong>期望薪资:</strong> {{ resume.salary }}</p>
-      <p><strong>个人总结:</strong> {{ resume.person }}</p>
-      <p><strong>教育背景:</strong> {{ resume.education }}</p>
-      <p><strong>项目经历:</strong> {{ resume.project }}</p>
-      <p><strong>技能及证书:</strong> {{ resume.field120 }}</p>
-      <p><strong>荣誉奖项:</strong> {{ resume.honor }}</p>
-      <el-button type="primary" @click="openEditDialog">编辑简历</el-button>
+  <div>
+    <!-- 简历卡片 -->
+    <el-card class="box-card" v-if="hasResume">
+      <div slot="header" class="clearfix">
+        <h1 class="my-resume-title">我的简历</h1>
+      </div>
+      <div>
+        <el-form label-width="100px" :model="form" :rules="rules" ref="formRef">
+          <!-- 个人信息 -->
+          <h2>个人信息</h2>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" placeholder="姓名" style="width: 200px"></el-input>
+          </el-form-item>
+          <el-form-item label="电话" prop="tel">
+            <el-input v-model="form.tel" placeholder="电话" style="width: 200px"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="form.email" placeholder="邮箱" style="width: 200px"></el-input>
+          </el-form-item>
+          <el-form-item label="现居城市" prop="address">
+            <el-input v-model="form.address" placeholder="现居城市" style="width: 200px"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="gender">
+            <el-select v-model="form.gender" placeholder="请选择性别">
+              <el-option label="男" value="男"></el-option>
+              <el-option label="女" value="女"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="当前状态" prop="status">
+            <el-select v-model="form.status" placeholder="请选择当前状态">
+              <el-option label="在职" value="在职"></el-option>
+              <el-option label="离职" value="离职"></el-option>
+              <el-option label="应届毕业生" value="应届毕业生"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <!-- 求职意向 -->
+          <h2>求职意向</h2>
+          <el-form-item label="意向城市" prop="city">
+            <el-input v-model="form.city" placeholder="意向城市" style="width: 200px"></el-input>
+          </el-form-item>
+          <el-form-item label="期望职位" prop="department">
+            <el-input v-model="form.department" placeholder="期望职位" style="width: 200px"></el-input>
+          </el-form-item>
+          <el-form-item label="期望薪资" prop="salary">
+            <el-input v-model="form.salary" placeholder="期望薪资" style="width: 200px"></el-input>
+          </el-form-item>
+
+          <!-- 个人总结 -->
+          <h2>个人总结</h2>
+          <el-form-item label="个人总结" prop="person">
+            <el-input type="textarea" v-model="form.person" placeholder="个人总结"></el-input>
+          </el-form-item>
+
+          <!-- 教育背景 -->
+          <h2>教育背景</h2>
+          <el-form-item label="教育背景" prop="education">
+            <el-input type="textarea" v-model="form.education" placeholder="教育背景"></el-input>
+          </el-form-item>
+
+          <!-- 项目经历 -->
+          <h2>项目经历</h2>
+          <el-form-item label="项目经历" prop="project">
+            <el-input type="textarea" v-model="form.project" placeholder="项目经历"></el-input>
+          </el-form-item>
+
+          <!-- 技能及证书 -->
+          <h2>技能及证书</h2>
+          <el-form-item label="技能及证书" prop="skills">
+            <el-input type="textarea" v-model="form.skills" placeholder="技能及证书"></el-input>
+          </el-form-item>
+
+          <!-- 荣誉奖项 -->
+          <h2>荣誉奖项</h2>
+          <el-form-item label="荣誉奖项" prop="honor">
+            <el-input type="textarea" v-model="form.honor" placeholder="荣誉奖项"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-card>
 
-    <el-dialog :visible.sync="editDialogVisible" title="编辑简历">
-      <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
-        <!-- 同 MyResume.vue 文件中的表单内容 -->
-        <!-- ... -->
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="resetForm">重置</el-button>
-        <el-button type="primary" @click="submitForm">提交</el-button>
-      </div>
+    <!-- 保存与重置按钮 -->
+    <div class="button-group" v-if="hasResume">
+      <el-button type="primary" @click="save">保存</el-button>
+      <el-button @click="reset">重置</el-button>
+    </div>
+
+    <!-- 没有简历时的提示对话框 -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
+      <span>您还没有简历，请新建一个。</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleAdd">新建简历</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
+  name: "MyResume",
   data() {
     return {
-      editDialogVisible: false,
-      resume: {
-        name: '张三',
-        tel: '1234567890',
-        email: 'zhangsan@example.com',
-        address: '北京',
-        gender: 1,
-        job: '前端开发工程师',
-        status: 1,
-        city: '北京',
-        department: '技术部',
-        salary: '15k-20k',
-        person: '热爱编程，乐于挑战。',
-        education: '北京大学 计算机科学与技术 本科 2020.09-2023.06',
-        project: '参与多个前端项目开发，熟悉Vue.js和React.js。',
-        field120: '技能：JavaScript, Vue.js, React.js 证书:计算机一级',
-        honor: '获得国家奖学金',
-      },
-      formData: {
-        name: '',
-        tel: '',
-        email: '',
-        address: '',
-        gender: '',
-        job: '',
-        status: '',
-        city: '',
-        department: '',
-        salary: '',
-        person: '',
-        education: '',
-        project: '',
-        field120: '',
-        honor: '',
-      },
+      hasResume: false,  // 判断是否有简历
+      dialogVisible: false,  // 控制对话框的显示
+      form: {},          // 存储简历数据
+      originalForm: {},  // 保存原始数据，用于重置
+      user: JSON.parse(localStorage.getItem('xm-user') || '{}'), // 获取当前登录用户
       rules: {
-        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        tel: [{ required: true, message: '请输入电话', trigger: 'blur' }],
-        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
-        address: [{ required: true, message: '请输入现居城市', trigger: 'blur' }],
-        gender: [{ required: true, message: '请输入性别', trigger: 'change' }],
-        job: [],
-        status: [{ required: true, message: '请输入当前状态', trigger: 'change' }],
-        city: [{ required: true, message: '请输入意向城市', trigger: 'blur' }],
-        department: [{ required: true, message: '请输入期望职位', trigger: 'blur' }],
-        salary: [{ required: true, message: '请输入期望薪资', trigger: 'blur' }],
-        person: [{ required: true, message: '请输入个人总结', trigger: 'blur' }],
-        education: [{ required: true, message: '请输入教育背景', trigger: 'blur' }],
-        project: [{ required: true, message: '请输入项目经历', trigger: 'blur' }],
-        field120: [{ required: true, message: '请输入技能及证书', trigger: 'blur' }],
-        honor: [{ required: true, message: '请输入荣誉奖项', trigger: 'blur' }],
+        name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+        ],
       },
-      genderOptions: [
-        { label: '男', value: 1 },
-        { label: '女', value: 2 },
-      ],
-      statusOptions: [
-        { label: '在职', value: 1 },
-        { label: '离职', value: 2 },
-        { label: '应届毕业生', value: 3 },
-      ],
-    };
+    }
+  },
+  created() {
+    this.loadResume()
   },
   methods: {
-    getGenderLabel(value) {
-      const gender = this.genderOptions.find(g => g.value === value);
-      return gender ? gender.label : '';
+    loadResume() {  // 加载当前用户的简历信息
+      this.$request.get(`/resume/selectByStudentId/${this.user.id}`).then(res => {
+        if (res.data) {
+          console.log(res.data)
+          this.form = res.data
+          this.originalForm = JSON.parse(JSON.stringify(res.data))  // 保存原始数据
+          this.hasResume = true
+        } else {
+          this.dialogVisible = true  // 如果没有简历，显示提示对话框
+        }
+      })
     },
-    getStatusLabel(value) {
-      const status = this.statusOptions.find(s => s.value === value);
-      return status ? status.label : '';
+    handleAdd() {   // 新建简历
+      this.form = { studentId: this.user.id }  // 清空表单并添加学生ID
+      this.hasResume = true
+      this.dialogVisible = false  // 隐藏对话框，显示卡片
     },
-    openEditDialog() {
-      this.formData = { ...this.resume };
-      this.editDialogVisible = true;
+    save() {   // 保存简历
+      this.$refs.formRef.validate(valid => {
+        if (valid) {
+          const url = this.form.id ? '/resume/update' : '/resume/add'
+          const method = this.form.id ? 'PUT' : 'POST'
+          this.$request({
+            url,
+            method,
+            data: this.form
+          }).then(res => {
+            if (res.code === '200') {
+              this.$message.success('保存成功')
+              this.loadResume()  // 重新加载简历数据
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }
+      })
     },
-    submitForm() {
-      this.$refs['elForm'].validate(valid => {
-        if (!valid) return;
-        this.resume = { ...this.formData };
-        this.editDialogVisible = false;
-      });
+    reset() {   // 重置简历信息
+      this.form = JSON.parse(JSON.stringify(this.originalForm))  // 恢复到原始数据
     },
-    resetForm() {
-      this.$refs['elForm'].resetFields();
-    },
-  },
-};
+  }
+}
 </script>
 
-<style>
-.resume {
-  padding: 20px;
-}
-.resume-card {
+<style scoped>
+.box-card {
+  padding: 10px; /* 减少卡片内部的填充 */
+  width: 50%;
   margin: 0 auto;
-  max-width: 600px;
 }
+
+.button-group {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.el-form-item {
+  margin-bottom: 10px; /* 减少表单项之间的间距 */
+}
+
+.my-resume-title {
+  font-family: 'WenQuanYi Micro Hei', sans-serif;  /* 字体 */
+  font-size: 24px;  /* 字体大小 */
+  color: #333;      /* 字体颜色 */
+  text-align: center; /* 文本居中 */
+  margin-bottom: 20px; /* 下边距 */
+}
+
+
+h2 {
+  margin-top: 10px; /* 减少标题与内容之间的间距 */
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 </style>

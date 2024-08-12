@@ -80,4 +80,11 @@ public class ResumeService {
         List<Resume> list = resumeMapper.selectByEnterpriseId(resume);
         return PageInfo.of(list);
     }
+
+    /**
+     * 根据学生ID查询
+     */
+    public Resume selectByStudentId(Integer studentId) {
+        return resumeMapper.selectByStudentId(studentId);
+    }
 }
