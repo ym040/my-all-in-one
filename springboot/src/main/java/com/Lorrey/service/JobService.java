@@ -80,4 +80,13 @@ public class JobService {
         List<Job> list = jobMapper.selectByEnterpriseId(job);
         return PageInfo.of(list);
     }
+
+    /**
+     * 根据企业ID查询企业下的岗位信息
+     * @param enterpriseId
+     * @return
+     */
+    public List<Job> selectEnterpriseJob(Integer enterpriseId) {
+        return jobMapper.selectEnterpriseJob(enterpriseId);
+    }
 }

@@ -95,4 +95,15 @@ public class JobController {
         return Result.success(page);
     }
 
+    /**
+     * 根据企业ID查询企业下的岗位信息
+     * @param enterpriseId
+     * @return
+     */
+    @GetMapping("selectEnterpriseJob/{enterpriseId}")
+    public Result selectEnterpriseJob(@PathVariable Integer enterpriseId) {
+        List<Job> list = jobService.selectEnterpriseJob(enterpriseId);
+        return Result.success(list);
+    }
+
 }

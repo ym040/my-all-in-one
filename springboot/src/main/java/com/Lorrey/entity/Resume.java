@@ -21,6 +21,8 @@ public class Resume implements Serializable {
     private String tel;
     /** 邮箱 */
     private String email;
+    /** 现居城市 */
+    private String address;
     /** 性别 */
     private String gender;
     /** 求职状态 */

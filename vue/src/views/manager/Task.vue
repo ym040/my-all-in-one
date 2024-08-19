@@ -10,13 +10,13 @@
     </div>
 
     <div class="operation">
-      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN'">发布任务</el-button>
-      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
+      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">发布任务</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">批量删除</el-button>
     </div>
 
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="studentId" label="学生ID"></el-table-column>
         <el-table-column prop="studentName" label="姓名"></el-table-column>
@@ -83,13 +83,25 @@
     <el-dialog title="发布任务" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-table :data="studentData" @selection-change="handleStudentSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="studentId" label="学生ID"></el-table-column>
+        <el-table-column prop="stuId" label="学生ID"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="教师"></el-table-column>
         <el-table-column prop="jobName" label="岗位"></el-table-column>
         <el-table-column prop="enterpriseName" label="公司名称"></el-table-column>
       </el-table>
+
+      <div class="pagination">
+        <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-sizes="[5, 10, 20]"
+            :page-size="pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
+        </el-pagination>
+      </div>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="fromVisible = false">取消</el-button>
@@ -201,46 +213,10 @@ export default {
   },
   created() {
       this.load(1);
-      this.loadStudent();
+      this.loadStudentList();
   },
   methods: {
-    loadStudent() {
-      this.$request.get('/apply/selectAll').then(res => {
-        if (res.code === '200') {
-          // 将 stuId 映射为 studentId
-          this.originalStudentData = res.data.map(student => ({
-            ...student,
-            studentId: student.stuId,
-          }));
 
-          // 获取已发布的任务
-          this.$request.get('/task/selectAll').then(taskRes => {
-            if (taskRes.code === '200') {
-              const publishedStudentIds = new Set(taskRes.data.map(task => task.studentId));
-              this.studentData = this.originalStudentData.filter(student => !publishedStudentIds.has(student.studentId)); // 这里修改为 studentId
-
-              // 根据班级ID查找教师信息并更新studentData
-              const classIds = new Set(this.studentData.map(student => student.classId));
-              const teacherPromises = Array.from(classIds).map(classId => this.getTeacherByClassId(classId));
-
-              Promise.all(teacherPromises).then(teachers => {
-                this.teacherMap = new Map(teachers.map(teacher => [teacher.classId, { teacherId: teacher.teacherId, teacherName: teacher.teacherName }]));
-
-                this.studentData.forEach(student => {
-                  const teacherInfo = this.teacherMap.get(student.classId) || { teacherId: null, teacherName: '未指定' };
-                  student.teacherName = teacherInfo.teacherName;
-
-                });
-              });
-            } else {
-              this.$message.error(taskRes.msg);
-            }
-          });
-        } else {
-          this.$message.error(res.msg);
-        }
-      });
-    },
     handleAdd() {
       this.selectedStudents = [];
       this.fromVisible = true;
@@ -248,14 +224,51 @@ export default {
     handleStudentSelectionChange(selected) {
       this.selectedStudents = selected;
     },
+
+    loadStudentList() {
+      // 使用教师ID作为查询参数
+      this.$request.get('/apply/selectByTeacherId', {
+        params: {
+          teacherId: this.user.id
+        }
+      }).then(response => {
+        // 成功处理逻辑
+        this.studentData = response.data;
+        console.log('学生列表:', this.studentData);
+
+        // 获取已发布的任务
+        this.$request.get('/task/selectByTeacher', {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            teacherId: this.user.id
+          }
+        }).then(taskRes => {
+          if (taskRes.code === '200') {
+            const publishedStudentIds = taskRes.data?.list.map(task => task.studentId);
+            // 使用 includes 进行筛选
+            this.unassignedStudentData = this.studentData.filter(student => !publishedStudentIds.includes(student.stuId));
+            // 更新显示的数据
+            this.studentData = this.unassignedStudentData;
+          } else {
+            this.$message.error(taskRes.msg);
+          }
+        }).catch(taskError => {
+          console.error('获取任务列表失败:', taskError);
+        });
+      }).catch(error => {
+        // 失败处理逻辑
+        console.error('查询失败:', error);
+      });
+    },
+
     publishTask() {
       const tasks = this.selectedStudents.map(student => {
-        const teacherInfo = this.teacherMap.get(student.classId) || { teacherId: null, teacherName: '未指定' };
         return {
-          studentId: student.studentId,  // 这里修改为 studentId
+          studentId: student.stuId,  // 确保这里使用 studentId
           name: student.name,
           classId: student.classId,
-          teacherId: teacherInfo.teacherId,
+          teacherId: student.teacherId,
           jobId: student.jobId,
           enterpriseId: student.enterpriseId,
         };
@@ -264,9 +277,9 @@ export default {
       this.$request.post('/task/batchAdd', tasks).then(res => {
         if (res.code === '200') {
           this.$message.success('发布成功');
-          this.load(1);
-          this.loadStudent();
-          this.fromVisible = false;
+          this.load(1);  // 假设 load 方法用于重新加载数据
+          this.loadStudentList();  // 重新加载未关联任务的学生列表
+          this.fromVisible = false;  // 关闭发布任务的弹窗
         } else {
           this.$message.error(res.msg);
         }
@@ -323,7 +336,7 @@ export default {
           if (res.code === '200') {
             this.$message.success('操作成功');
             this.load(1);
-            this.loadStudent();
+            this.loadStudentList();
           } else {
             this.$message.error(res.msg);
           }
@@ -343,7 +356,7 @@ export default {
           if (res.code === '200') {
             this.$message.success('操作成功');
             this.load(1);
-            this.loadStudent();
+            this.loadStudentList();
           } else {
             this.$message.error(res.msg);
           }

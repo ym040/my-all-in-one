@@ -54,6 +54,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectEnterpriseJob" resultType="com.Lorrey.entity.Job">
+        select job.*, enterprise.name as enterpriseName
+        from job
+        left join enterprise on job.enterprise_id = enterprise.id
+        where job.enterprise_id = #{enterpriseId}
+    </select>
+
     <delete id="deleteById">
         delete from job
         where  id = #{id}

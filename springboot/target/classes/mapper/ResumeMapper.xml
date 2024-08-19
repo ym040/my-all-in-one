@@ -5,7 +5,7 @@
 <mapper namespace="com.Lorrey.mapper.ResumeMapper">
 
     <sql id="Base_Column_List">
-        id,student_id,name,tel,email,gender,status,city,department,salary,person,education,project,skills,honor    </sql>
+        id,student_id,name,tel,email,address,gender,status,city,department,salary,person,education,project,skills,honor    </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Resume">
         select resume.*, student.name as studentName
@@ -17,6 +17,7 @@
             <if test="name != null"> and resume.name like concat('%', #{name}, '%')</if>
             <if test="tel != null"> and resume.tel = #{tel}</if>
             <if test="email != null"> and resume.email = #{email}</if>
+            <if test="address != null"> and resume.address = #{address}</if>
             <if test="gender != null"> and resume.gender = #{gender}</if>
             <if test="status != null"> and resume.status = #{status}</if>
             <if test="city != null"> and resume.city = #{city}</if>
@@ -58,6 +59,7 @@
             <if test="name != null">name,</if>
             <if test="tel != null">tel,</if>
             <if test="email != null">email,</if>
+            <if test="address != null">address,</if>
             <if test="gender != null">gender,</if>
             <if test="status != null">status,</if>
             <if test="city != null">city,</if>
@@ -75,6 +77,7 @@
             <if test="name != null">#{name},</if>
             <if test="tel != null">#{tel},</if>
             <if test="email != null">#{email},</if>
+            <if test="address != null">#{address},</if>
             <if test="gender != null">#{gender},</if>
             <if test="status != null">#{status},</if>
             <if test="city != null">#{city},</if>
@@ -99,6 +102,9 @@
             </if>
             <if test="email != null">
                 email = #{email},
+            </if>
+            <if test="address != null">
+                address = #{address},
             </if>
             <if test="gender != null">
                 gender = #{gender},
@@ -145,6 +151,9 @@
             </if>
             <if test="email != null">
                 email = #{email},
+            </if>
+            <if test="address != null">
+                address = #{address},
             </if>
             <if test="gender != null">
                 gender = #{gender},

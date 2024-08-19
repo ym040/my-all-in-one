@@ -39,4 +39,11 @@ public interface JobMapper {
      * 根据企业ID查询 + 企业名称模糊查询
      */
     List<Job> selectByEnterpriseId(Job job);
+
+    /**
+     * 根据企业ID查询企业下的岗位信息
+     * @param enterpriseId
+     * @return
+     */
+    List<Job> selectEnterpriseJob(Integer enterpriseId);
 }

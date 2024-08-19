@@ -33,7 +33,7 @@
                 v-model="scope.row.status"
                 active-value="实习中"
                 inactive-value="未实习"
-                :disabled="user.role === 'STUDENT'"
+                :disabled="user.role === 'STUDENT' || scope.row.resumeStatus !== 1 || user.role === 'ENTERPRISE'"
                 @change="handleStatusChange(scope.row)"
             ></el-switch>
           </template>
@@ -86,7 +86,7 @@
           <el-input v-model="form.name" placeholder="姓名" :disabled="user.role === 'STUDENT'"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="classId">
-          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
+          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%" disabled>
             <el-option v-for="item in classData" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -135,14 +135,6 @@
                 :picker-options="pickerOptions">
             </el-date-picker>
           </div>
-        </el-form-item>
-        <el-form-item label="实习状态" prop="status">
-          <el-switch
-              v-model="form.status"
-              active-value="实习中"
-              inactive-value="未实习"
-              :disabled="user.role === 'STUDENT'"
-          ></el-switch>
         </el-form-item>
       </el-form>
 
@@ -226,10 +218,10 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="ResumeFromVisible = false">取 消</el-button>
+        <el-button @click="ResumeFromVisible = false" v-if="user.role !== 'ENTERPRISE'">取 消</el-button>
         <el-button type="primary" @click="updateResume" v-if="user.role === 'TEACHER'">优 化</el-button>
-        <el-button type="success" @click="ResumeStatus(form.studentId,1)" v-if="user.role === 'ENTERPRISE'">✅通 过</el-button>
-        <el-button type="danger" @click="ResumeStatus(form.studentId,2)" v-if="user.role === 'ENTERPRISE'">❌拒 绝</el-button>
+        <el-button type="success" @click="ResumeStatus(form.studentId,1)" v-if="user.role === 'ENTERPRISE'">通 过</el-button>
+        <el-button type="danger" @click="ResumeStatus(form.studentId,2)" v-if="user.role === 'ENTERPRISE'">拒 绝</el-button>
       </div>
     </el-dialog>
 
@@ -304,18 +296,11 @@ export default {
         }
       })
     },
-    loadJob() {
-      this.$request.get('/job/selectAll').then(res => {
-        if (res.code === '200') {
-          this.jobData = res.data
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    },
+
     loadJobByEnterpriseId(enterpriseId) {
-      this.$request.get(`/job/selectByEnterpriseId/${enterpriseId}`).then(res => {
+      this.$request.get(`/job/selectEnterpriseJob/${enterpriseId}`).then(res => {
         if (res.code === '200') {
+          console.log(res.data)
           this.jobData = res.data;
         } else {
           this.$message.error(res.msg);
@@ -352,8 +337,13 @@ export default {
         method: 'PUT',
         data: this.form
       }).then(res => {
-        this.load(1)
-        this.ResumeFromVisible = false   // 打开弹窗
+        if (res.code === '200') {
+          this.$message.success('简历优化成功');
+          this.load(1); // 重新加载数据
+          this.ResumeFromVisible = false; // 关闭弹窗
+        } else {
+          this.$message.error(res.msg);
+        }
       })
     },
 
@@ -400,7 +390,7 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           // 在保存之前检查并更新读取状态
-          if (this.form.readStatus === 2) {
+          if (this.form.readStatus === 2 && this.user.role === 'STUDENT') {
             this.form.readStatus = 1; // 如果当前是已读状态，则改为未读
           }
 
@@ -517,21 +507,24 @@ export default {
       this.form.avatar = response.data
     },
     handleStatusChange(row) {
-      this.$request({
-        url: '/apply/updateStatus',
-        method: 'PUT',
-        data: { id: row.id, status: row.status }
-      }).then(res => {
-        if (res.code === '200') {
-          if (row.status === '实习中') {
-            this.$message.success(`状态更新成功，当前状态：${row.status}`);
+      // 判断简历状态是否为已通过 (resumeStatus = 1)
+      if (!row.resumeStatus || row.resumeStatus === 1) {
+        this.$request({
+          url: '/apply/updateStatus',
+          method: 'PUT',
+          data: { id: row.id, status: row.status }
+        }).then(res => {
+          if (res.code === '200') {
+            // 状态更新成功
+            this.$message.success(`状态已更新为：${row.status}`);
           } else {
-            this.$message.error(`状态更新成功，当前状态：${row.status}`);
+            this.$message.error(res.msg);
           }
-        } else {
-          this.$message.error(res.msg);
-        }
-      })
+        });
+      } else {
+        // 简历状态不是已通过，提示用户
+        this.$message.warning('未通过简历审核，请修改实习申请信息');
+      }
     },
     handleView(row) {
       //console.log(row)
