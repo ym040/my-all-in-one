@@ -140,5 +140,12 @@ public class ApplyService {
         List<Apply> list = applyMapper.selectByStudent(apply);
         return PageInfo.of(list);
     }
+
+    /**
+     * 更新简历状态
+     */
+    public void updateResumeStatus(Integer stuId, Integer resumeStatus) {
+        applyMapper.updateResumeStatus(stuId, resumeStatus);
+    }
 }
 

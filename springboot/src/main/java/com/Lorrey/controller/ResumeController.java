@@ -56,6 +56,15 @@ public class ResumeController {
     }
 
     /**
+     * 根据学生ID修改
+     */
+    @PutMapping("/updateByStudentId")
+    public Result updateByStudentId(@RequestBody Resume resume) {
+        resumeService.updateByStudentId(resume);
+        return Result.success();
+    }
+
+    /**
      * 根据ID查询
      */
     @GetMapping("/selectById/{id}")

@@ -70,8 +70,8 @@ public class ApplyController {
     /**
      * 根据学生ID查询
      */
-    @GetMapping("/selectByStuId")
-    public Result selectByStuId(@RequestParam Integer stuId) {
+    @GetMapping("/selectByStuId/{stuId}")
+    public Result selectByStuId(@PathVariable Integer stuId) {
         Apply apply = applyService.selectByStuId(stuId);
         return Result.success(apply);
     }
@@ -168,6 +168,15 @@ public class ApplyController {
             return Result.error(PARAM_ERROR);
         }
         applyService.updateReadStatus(apply);
+        return Result.success();
+    }
+
+    /**
+     * 更新简历状态
+     */
+    @PutMapping("/updateResumeStatus/{studentId}/{resumeStatus}")
+    public Result updateResumeStatus(@PathVariable Integer studentId, @PathVariable Integer resumeStatus) {
+        applyService.updateResumeStatus(studentId,resumeStatus);
         return Result.success();
     }
 

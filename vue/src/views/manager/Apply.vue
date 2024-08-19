@@ -44,11 +44,18 @@
             <el-tag v-else type="warning">未读</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="resume_status" label="简历状态" align="center">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.resumeStatus === 1" type="success">已通过</el-tag>
+            <el-tag v-if="scope.row.resumeStatus === 2" type="danger">未通过</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
             <el-button size="mini" plain @click="handleView(scope.row)" v-if="user.role === 'TEACHER' || user.role === 'ADMIN'">查看</el-button>
+            <el-button size="mini" plain @click="handleViewResume(scope.row.stuId)" v-if="user.role !== 'STUDENT'">查看简历</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -145,6 +152,87 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="简历信息" :visible.sync="ResumeFromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+      <el-form label-width="100px" :model="form" :rules="rules" ref="formRef">
+        <!-- 个人信息 -->
+        <h2>个人信息</h2>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="form.name" placeholder="姓名" style="width: 200px"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="tel">
+          <el-input v-model="form.tel" placeholder="电话" style="width: 200px"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" placeholder="邮箱" style="width: 200px"></el-input>
+        </el-form-item>
+        <el-form-item label="现居城市" prop="address">
+          <el-input v-model="form.address" placeholder="现居城市" style="width: 200px"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="gender">
+          <el-select v-model="form.gender" placeholder="请选择性别">
+            <el-option label="男" value="男"></el-option>
+            <el-option label="女" value="女"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="当前状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择当前状态">
+            <el-option label="在职" value="在职"></el-option>
+            <el-option label="离职" value="离职"></el-option>
+            <el-option label="应届毕业生" value="应届毕业生"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <!-- 求职意向 -->
+        <h2>求职意向</h2>
+        <el-form-item label="意向城市" prop="city">
+          <el-input v-model="form.city" placeholder="意向城市" style="width: 200px"></el-input>
+        </el-form-item>
+        <el-form-item label="期望职位" prop="department">
+          <el-input v-model="form.department" placeholder="期望职位" style="width: 200px"></el-input>
+        </el-form-item>
+        <el-form-item label="期望薪资" prop="salary">
+          <el-input v-model="form.salary" placeholder="期望薪资" style="width: 200px"></el-input>
+        </el-form-item>
+
+        <!-- 个人总结 -->
+        <h2>个人总结</h2>
+        <el-form-item label="个人总结" prop="person">
+          <el-input type="textarea" v-model="form.person" placeholder="个人总结"></el-input>
+        </el-form-item>
+
+        <!-- 教育背景 -->
+        <h2>教育背景</h2>
+        <el-form-item label="教育背景" prop="education">
+          <el-input type="textarea" v-model="form.education" placeholder="教育背景"></el-input>
+        </el-form-item>
+
+        <!-- 项目经历 -->
+        <h2>项目经历</h2>
+        <el-form-item label="项目经历" prop="project">
+          <el-input type="textarea" v-model="form.project" placeholder="项目经历"></el-input>
+        </el-form-item>
+
+        <!-- 技能及证书 -->
+        <h2>技能及证书</h2>
+        <el-form-item label="技能及证书" prop="skills">
+          <el-input type="textarea" v-model="form.skills" placeholder="技能及证书"></el-input>
+        </el-form-item>
+
+        <!-- 荣誉奖项 -->
+        <h2>荣誉奖项</h2>
+        <el-form-item label="荣誉奖项" prop="honor">
+          <el-input type="textarea" v-model="form.honor" placeholder="荣誉奖项"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="ResumeFromVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateResume" v-if="user.role === 'TEACHER'">优 化</el-button>
+        <el-button type="success" @click="ResumeStatus(form.studentId,1)" v-if="user.role === 'ENTERPRISE'">✅通 过</el-button>
+        <el-button type="danger" @click="ResumeStatus(form.studentId,2)" v-if="user.role === 'ENTERPRISE'">❌拒 绝</el-button>
+      </div>
+    </el-dialog>
+
 
   </div>
 </template>
@@ -160,6 +248,7 @@ export default {
       total: 0,
       username: null,
       fromVisible: false,
+      ResumeFromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
@@ -190,7 +279,7 @@ export default {
   methods: {
     loadClasses() {
       this.$request.get('/classes/selectAll').then(res => {
-        if (res.code ==='200') {
+        if (res.code === '200') {
           this.classData = res.data
         } else {
           this.$message.error(res.msg)
@@ -199,7 +288,7 @@ export default {
     },
     loadEnterprise() {
       this.$request.get('/enterprise/selectAll').then(res => {
-        if (res.code ==='200') {
+        if (res.code === '200') {
           this.enterpriseData = res.data
         } else {
           this.$message.error(res.msg)
@@ -208,7 +297,7 @@ export default {
     },
     loadTeachers() {
       this.$request.get('/teacher/selectAll').then(res => {
-        if (res.code ==='200') {
+        if (res.code === '200') {
           this.teacherData = res.data
         } else {
           this.$message.error(res.msg)
@@ -217,7 +306,7 @@ export default {
     },
     loadJob() {
       this.$request.get('/job/selectAll').then(res => {
-        if (res.code ==='200') {
+        if (res.code === '200') {
           this.jobData = res.data
         } else {
           this.$message.error(res.msg)
@@ -246,6 +335,66 @@ export default {
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
       this.fromVisible = true   // 打开弹窗
+    },
+    handleViewResume(stuId) {   // 编辑数据
+      this.$request.get(`/resume/selectByStudentId/${stuId}`).then(res => {
+        if (res && res.data) {
+          this.form = res.data;
+          this.ResumeFromVisible = true;   // 打开弹窗
+        } else {
+          this.$message.warning('该学生暂无简历信息');
+        }
+      })
+    },
+    updateResume() {
+      this.$request({
+        url: '/resume/updateByStudentId',
+        method: 'PUT',
+        data: this.form
+      }).then(res => {
+        this.load(1)
+        this.ResumeFromVisible = false   // 打开弹窗
+      })
+    },
+
+    ResumeStatus(studentId, status) {
+      if (status === 1) {
+        this.$confirm('确定通过该简历吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.updateResumeStatus(studentId, status);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      } else if (status === 2) {
+        this.$confirm('确定拒绝该简历吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.updateResumeStatus(studentId, status);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      }
+    },
+    updateResumeStatus(studentId, status) {
+      this.$request.put('/apply/updateResumeStatus/' + studentId + '/' + status)
+          .then(res => {
+            this.load(1); // 刷新列表
+            this.ResumeFromVisible = false; // 关闭弹窗
+          })
+          .catch(error => {
+            console.error('更新简历状态失败:', error);
+          });
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {

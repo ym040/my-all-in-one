@@ -87,4 +87,11 @@ public class ResumeService {
     public Resume selectByStudentId(Integer studentId) {
         return resumeMapper.selectByStudentId(studentId);
     }
+
+    /**
+     * 根据学生ID修改
+     */
+    public void updateByStudentId(Resume resume) {
+        resumeMapper.updateByStudentId(resume);
+    }
 }

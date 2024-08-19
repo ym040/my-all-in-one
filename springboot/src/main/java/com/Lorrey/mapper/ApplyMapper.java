@@ -52,6 +52,11 @@ public interface ApplyMapper {
     void updateReadStatus(Apply apply);
 
     /**
+     * 更新简历状态
+     */
+    void updateResumeStatus(Integer stuId, Integer resumeStatus);
+
+    /**
      * 根据学生ID查询
      */
     Apply selectByStuId(Integer stuId);

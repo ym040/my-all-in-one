@@ -44,4 +44,9 @@ public interface ResumeMapper {
      * 根据学生ID查询
      */
     Resume selectByStudentId(Integer studentId);
+
+    /**
+     * 根据学生ID修改
+     */
+    void updateByStudentId(Resume resume);
 }

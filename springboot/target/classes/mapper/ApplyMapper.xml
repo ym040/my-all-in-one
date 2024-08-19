@@ -5,7 +5,7 @@
 <mapper namespace="com.Lorrey.mapper.ApplyMapper">
 
     <sql id="Base_Column_List">
-        id,stu_id,username,name,class_id,teacher_id,phone,enterprise_id,job_id,salary,address,begin_time,end_time,status,read_status
+        id,stu_id,username,name,class_id,teacher_id,phone,enterprise_id,job_id,salary,address,begin_time,end_time,status,read_status,resume_status
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.Apply">
@@ -27,6 +27,7 @@
             <if test="endTime != null"> and apply.end_time= #{endTime}</if>
             <if test="status != null"> and apply.status= #{status}</if>
             <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+            <if test="resumeStatus != null"> and apply.resume_status= #{resumeStatus}</if>
         </where>
     </select>
 
@@ -77,6 +78,7 @@
             <if test="endTime != null"> and apply.end_time= #{endTime}</if>
             <if test="status != null"> and apply.status= #{status}</if>
             <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+            <if test="resumeStatus != null"> and apply.resume_status= #{resumeStatus}</if>
         </where>
     </select>
 
@@ -100,6 +102,7 @@
             <if test="endTime != null"> and apply.end_time= #{endTime}</if>
             <if test="status != null"> and apply.status= #{status}</if>
             <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+            <if test="resumeStatus != null"> and apply.resume_status= #{resumeStatus}</if>
         </where>
     </select>
 
@@ -122,6 +125,7 @@
             <if test="endTime != null"> and apply.end_time= #{endTime}</if>
             <if test="status != null"> and apply.status= #{status}</if>
             <if test="readStatus != null"> and apply.read_status= #{readStatus}</if>
+            <if test="resumeStatus != null"> and apply.resume_status= #{resumeStatus}</if>
         </where>
     </select>
 
@@ -149,6 +153,7 @@
                 <if test="endTime != null">end_time,</if>
                 <if test="status != null">status,</if>
                 <if test="readStatus != null">read_status,</if>
+                <if test="resumeStatus != null">resume_status,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -166,6 +171,7 @@
                 <if test="endTime != null">#{endTime},</if>
                 <if test="status != null">#{status},</if>
                 <if test="readStatus != null">#{readStatus},</if>
+                <if test="resumeStatus != null">#{resumeStatus},</if>
         </trim>
     </insert>
 
@@ -211,6 +217,9 @@
             <if test="readStatus != null">
                 read_status = #{readStatus},
             </if>
+            <if test="resumeStatus != null">
+                resume_status = #{resumeStatus},
+            </if>
         </set>
         where id = #{id}
     </update>
@@ -225,6 +234,12 @@
         UPDATE apply
         SET read_status = #{readStatus}
         WHERE id = #{id}
+    </update>
+
+    <update id="updateResumeStatus" parameterType="com.Lorrey.entity.Apply">
+        UPDATE apply
+        SET apply.resume_status = #{resumeStatus}
+        WHERE stu_id = #{stuId}
     </update>
 
 </mapper>

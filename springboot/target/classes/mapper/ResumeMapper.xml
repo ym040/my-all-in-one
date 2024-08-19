@@ -38,6 +38,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectByStudentId" resultType="com.Lorrey.entity.Resume">
+        select
+        <include refid="Base_Column_List" />
+        from resume
+        where student_id = #{studentId}
+    </select>
+
     <delete id="deleteById">
         delete from resume
         where  id = #{id}
@@ -125,6 +132,52 @@
             </if>
         </set>
         where id = #{id}
+    </update>
+
+    <update id="updateByStudentId">
+        update resume
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="department != null">
+                department = #{department},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="person != null">
+                person = #{person},
+            </if>
+            <if test="education != null">
+                education = #{education},
+            </if>
+            <if test="project != null">
+                project = #{project},
+            </if>
+            <if test="skills != null">
+                skills = #{skills},
+            </if>
+            <if test="honor != null">
+                honor = #{honor},
+            </if>
+        </set>
+        where student_id = #{studentId}
     </update>
 
 </mapper>
