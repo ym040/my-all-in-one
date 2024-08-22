@@ -25,10 +25,11 @@
         <el-table-column prop="address" label="工作地点"></el-table-column>
         <el-table-column prop="workTime" label="工作时间"></el-table-column>
 
-        <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">
+        <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
-            <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini">编辑</el-button>
-            <el-button plain type="danger" size="mini" @click=del(scope.row.id)>删除</el-button>
+            <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">编辑</el-button>
+            <el-button plain type="info" @click="handleView(scope.row)" size="mini" v-if="user.role === 'STUDENT'">查看</el-button>
+            <el-button plain type="danger" size="mini" @click=del(scope.row.id) v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,6 +86,45 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="`${form.name || ''}详情`" :visible.sync="ViewfromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+      <el-form label-width="100px" style="padding-right: 50px" :model="form" ref="formRef">
+        <el-form-item label="岗位名称">
+          <el-input v-model="form.name" disabled placeholder="岗位名称"></el-input>
+        </el-form-item>
+        <el-form-item label="行业方向">
+          <el-input v-model="form.direction" disabled placeholder="行业方向"></el-input>
+        </el-form-item>
+        <el-form-item label="单位名称">
+          <el-select v-model="form.enterpriseId" disabled placeholder="请选择单位" style="width: 100%">
+            <el-option v-for="item in enterpriseData" :label="item.name" :value="item.id" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="招聘人数">
+          <el-input v-model="form.count" disabled placeholder="招聘人数"></el-input>
+        </el-form-item>
+        <el-form-item label="薪水">
+          <el-input v-model="form.salary" disabled placeholder="薪水"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位描述">
+          <el-input type="textarea" :rows="5" v-model="form.jobDescribe" disabled placeholder="岗位描述"></el-input>
+        </el-form-item>
+        <el-form-item label="专业要求">
+          <el-input type="textarea" :rows="5" v-model="form.jobRequire" disabled placeholder="专业要求"></el-input>
+        </el-form-item>
+        <el-form-item label="工作地点">
+          <el-input v-model="form.address" disabled placeholder="工作地点"></el-input>
+        </el-form-item>
+        <el-form-item label="工作时间">
+          <el-input v-model="form.workTime" disabled placeholder="开始时间"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="ViewfromVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
+
 
   </div>
 </template>
@@ -100,6 +140,7 @@ export default {
       total: 0,
       name: null,
       fromVisible: false,
+      ViewfromVisible: false,
       form: {
         alCount: 0
       },
@@ -134,6 +175,10 @@ export default {
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
       this.fromVisible = true   // 打开弹窗
+    },
+    handleView(row) {   // 查看数据
+      this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
+      this.ViewfromVisible = true   // 打开弹窗
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
