@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Lorrey.mapper.UserActionsMapper">
+
+    <sql id="Base_Column_List">
+        id,userId,jobId,actionType,localDateTime
+    </sql>
+
+    <select id="selectAll" resultType="com.Lorrey.entity.UserActions">
+        select
+        <include refid="Base_Column_List" />
+        from userActions
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="userId != null"> and userId= #{userId}</if>
+            <if test="jobId != null"> and jobId= #{jobId}</if>
+            <if test="actionType != null"> and actionType= #{actionType}</if>
+            <if test="localDateTime != null"> and localDateTime= #{localDateTime}</if>
+        </where>
+    </select>
+
+    <select id="selectById" resultType="com.Lorrey.entity.UserActions">
+        select
+        <include refid="Base_Column_List" />
+        from userActions
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from userActions
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.Lorrey.entity.UserActions" useGeneratedKeys="true">
+        insert into userActions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="userId != null">userId,</if>
+                <if test="jobId != null">jobId,</if>
+                <if test="actionType != null">actionType,</if>
+                <if test="localDateTime != null">localDateTime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="userId != null">#{userId},</if>
+                <if test="jobId != null">#{jobId},</if>
+                <if test="actionType != null">#{actionType},</if>
+                <if test="localDateTime != null">#{localDateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.Lorrey.entity.UserActions">
+        update userActions
+        <set>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="jobId != null">
+                jobId = #{jobId},
+            </if>
+            <if test="actionType != null">
+                actionType = #{actionType},
+            </if>
+            <if test="localDateTime != null">
+                timestamp = #{localDateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

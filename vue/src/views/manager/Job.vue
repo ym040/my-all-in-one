@@ -179,6 +179,13 @@ export default {
     handleView(row) {   // 查看数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
       this.ViewfromVisible = true   // 打开弹窗
+
+      // 发送请求到后端接口 /userActions/add
+      this.$request.post('/userActions/add', {
+        userId: this.user.id,  // 学生 ID
+        jobId: row.id,  // 岗位 ID
+        actionType:  "VIEW"  // 用户行为
+      })
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {

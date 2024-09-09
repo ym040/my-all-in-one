@@ -407,6 +407,13 @@ export default {
               this.$message.error(res.msg)  // 弹出错误的信息
             }
           })
+
+          // 发送请求到后端接口 /userActions/add
+          this.$request.post('/userActions/add', {
+            userId: this.user.id,  // 学生 ID
+            jobId: this.form.jobId,  // 岗位 ID
+            actionType:  "APPLY"  // 用户行为
+          })
         }
       })
     },
