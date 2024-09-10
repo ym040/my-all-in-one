@@ -4,6 +4,7 @@
       <el-input placeholder="请输入岗位名称查询" style="width: 200px" v-model="name"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      <el-button type="primary" plain style="margin-left: 10px" @click="recommend(user.id)" v-if="user.role === 'STUDENT'">推荐岗位</el-button>
     </div>
 
     <div class="operation">
@@ -274,6 +275,21 @@ export default {
     handleCurrentChange(pageNum) {
       this.load(pageNum)
     },
+    recommend(userId) {
+      this.$request.get('userActions/recommend/' + userId).then(res => {
+        if (res.code === '200') {
+          this.$message.success('推荐成功')
+          console.log(res)
+          // 直接将推荐岗位列表绑定到 tableData
+          this.tableData = res.data;  // res.data 应该是一个岗位数组
+
+          // 如果有 total 的需求，可以手动设置
+          this.total = res.data?.length || 0;  // 或者计算推荐列表的长度
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    }
   }
 }
 </script>

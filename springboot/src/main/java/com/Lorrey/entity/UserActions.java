@@ -24,5 +24,4 @@ public class UserActions implements Serializable {
     /** 当前时间戳 */
     private LocalDateTime localDateTime;
 
-
 }

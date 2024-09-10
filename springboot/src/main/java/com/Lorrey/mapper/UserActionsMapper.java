@@ -1,5 +1,6 @@
 package com.Lorrey.mapper;
 
+import com.Lorrey.entity.Job;
 import com.Lorrey.entity.UserActions;
 import org.apache.ibatis.annotations.Select;
 
@@ -34,5 +35,10 @@ public interface UserActionsMapper {
       * 查询所有
     */
     List<UserActions> selectAll(UserActions userActions);
+
+    /**
+     * 根据UserID查询
+     */
+    List<UserActions> selectByUserId(Integer userId);
 
 }

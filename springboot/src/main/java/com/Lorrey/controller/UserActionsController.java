@@ -1,6 +1,7 @@
 package com.Lorrey.controller;
 
 import com.Lorrey.common.Result;
+import com.Lorrey.entity.Job;
 import com.Lorrey.entity.UserActions;
 import com.Lorrey.service.UserActionsService;
 import com.github.pagehelper.PageInfo;
@@ -65,6 +66,15 @@ public class UserActionsController {
     }
 
     /**
+     * 根据UserID查询
+     */
+    @GetMapping("/selectByUserId/{userId}")
+    public Result selectByUserId(@PathVariable Integer userId) {
+        List<UserActions> userActions = userActionsService.selectByUserId(userId);
+        return Result.success(userActions);
+    }
+
+    /**
      * 查询所有
      */
     @GetMapping("/selectAll")
@@ -82,6 +92,20 @@ public class UserActionsController {
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<UserActions> page = userActionsService.selectPage(userActions, pageNum, pageSize);
         return Result.success(page);
+    }
+
+    /**
+     * 基于协同过滤的推荐算法
+     */
+    @GetMapping("/recommend/{userId}")
+    public Result recommend(@PathVariable Integer userId) {
+        //查询该用户的所有行为
+        List<UserActions> list = userActionsService.selectByUserId(userId);
+        //System.out.println(list);
+        //根据用户行为进行推荐算法逻辑计算
+        List<Job> recommendList = userActionsService.recommend(list);
+        //System.out.println(recommendList);
+        return Result.success(recommendList);
     }
 
 }
