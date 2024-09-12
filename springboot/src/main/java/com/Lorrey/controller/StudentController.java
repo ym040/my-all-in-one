@@ -84,4 +84,13 @@ public class StudentController {
         return Result.success(page);
     }
 
+    /**
+     * 查询学生总数
+     */
+    @GetMapping("/selectCount")
+    public Result selectCount() {
+        int count = studentService.selectCount();
+        return Result.success(count);
+    }
+
 }

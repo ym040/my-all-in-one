@@ -180,4 +180,31 @@ public class ApplyController {
         return Result.success();
     }
 
+    /**
+     * 查询未实习人数总数
+     */
+    @GetMapping("/selectFStatusCount")
+    public Result selectFStatusCount() {
+        int count = applyService.selectFStatusCount();
+        return Result.success(count);
+    }
+
+    /**
+     * 查询实习中人数总数
+     */
+    @GetMapping("/selectTStatusCount")
+    public Result selectTStatusCount() {
+        int count = applyService.selectTStatusCount();
+        return Result.success(count);
+    }
+
+    /**
+     * 未申请人数总数
+     */
+    @GetMapping("/selectNoApplyCount")
+    public Result selectNoApplyCount() {
+        int count = applyService.selectNoApplyCount();
+        return Result.success(count);
+    }
+
 }

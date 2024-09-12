@@ -133,5 +133,12 @@ public class StudentService {
         dbStudent.setPassword(account.getNewPassword());
         studentMapper.updateById(dbStudent);
     }
+
+    /**
+     * 查询学生总数
+     */
+    public int selectCount() {
+        return studentMapper.selectCount();
+    }
 }
 

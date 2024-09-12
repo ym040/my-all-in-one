@@ -80,4 +80,19 @@ public interface ApplyMapper {
      * 学生分页查询
      */
     List<Apply> selectByStudent(Apply apply);
+
+    /**
+     * 查询未实习人数总数
+     */
+    int selectFStatusCount();
+
+    /**
+     * 查询实习中人数总数
+     */
+    int selectTStatusCount();
+
+    /**
+     * 未申请人数总数
+     */
+    int selectNoApplyCount();
 }

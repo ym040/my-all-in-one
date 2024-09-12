@@ -147,5 +147,26 @@ public class ApplyService {
     public void updateResumeStatus(Integer stuId, Integer resumeStatus) {
         applyMapper.updateResumeStatus(stuId, resumeStatus);
     }
+
+    /**
+     * 查询未实习人数总数
+     */
+    public int selectFStatusCount() {
+        return applyMapper.selectFStatusCount();
+    }
+
+    /**
+     * 查询实习中人数总数
+     */
+    public int selectTStatusCount() {
+        return applyMapper.selectTStatusCount();
+    }
+
+    /**
+     * 未申请人数总数
+     */
+    public int selectNoApplyCount() {
+        return applyMapper.selectNoApplyCount();
+    }
 }
 

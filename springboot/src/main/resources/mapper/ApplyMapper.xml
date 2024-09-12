@@ -129,6 +129,19 @@
         </where>
     </select>
 
+    <select id="selectFStatusCount" resultType="java.lang.Integer">
+        select count(*) from apply
+        where status = '未实习'
+    </select>
+
+    <select id="selectTStatusCount" resultType="java.lang.Integer">
+        select count(*) from apply
+        where status = '实习中'
+    </select>
+
+    <select id="selectNoApplyCount" resultType="java.lang.Integer">
+        SELECT (SELECT COUNT(*) FROM student) - (SELECT COUNT(*) FROM apply);
+    </select>
 
     <delete id="deleteById">
         delete from apply

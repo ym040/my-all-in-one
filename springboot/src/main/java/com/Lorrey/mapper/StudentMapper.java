@@ -37,4 +37,9 @@ public interface StudentMapper {
 
     @Select("select * from student where username = #{username}")
     Student selectByUsername(String username);
+
+    /**
+     * 查询学生总数
+     */
+    int selectCount();
 }

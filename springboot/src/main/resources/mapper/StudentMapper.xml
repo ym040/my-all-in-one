@@ -31,6 +31,10 @@
         where id = #{id}
     </select>
 
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(*) from student
+    </select>
+
     <delete id="deleteById">
         delete from student
         where  id = #{id}
