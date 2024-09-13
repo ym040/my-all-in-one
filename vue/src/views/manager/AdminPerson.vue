@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card style="width: 50%">
-      <el-form :model="user" label-width="100px" style="padding-right: 50px">
+      <el-form :model="user" label-width="100px" style="padding-right: 50px" :rules="rules">
         <div style="margin: 15px; text-align: center">
           <el-upload
               class="avatar-uploader"
@@ -38,7 +38,13 @@ export default {
   name: "AdminPerson",
   data() {
     return {
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}')
+      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+      rules: {
+        phone: [
+          { required: true, message: '请输入联系电话', trigger: 'blur' },
+          { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {

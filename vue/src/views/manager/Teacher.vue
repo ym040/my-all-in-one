@@ -114,7 +114,15 @@ export default {
       rules: {
         username: [
           {required: true, message: '请输入账号', trigger: 'blur'},
-        ]
+        ],
+        phone: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号码', trigger: 'blur' }, // 假设是中国大陆手机号码
+        ],
+        email: [
+          { required: true, message: '请输入电子邮箱', trigger: 'blur' },
+          { type: 'email', message: '请输入有效的电子邮箱地址', trigger: ['blur', 'change'] },
+        ],
       },
       ids: []
     }
