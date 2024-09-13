@@ -26,7 +26,7 @@
         <el-table-column prop="address" label="工作地点"></el-table-column>
         <el-table-column prop="workTime" label="工作时间"></el-table-column>
 
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="180" align="center" v-if="user.role !== 'TEACHER'">
           <template v-slot="scope">
             <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">编辑</el-button>
             <el-button plain type="info" @click="handleView(scope.row)" size="mini" v-if="user.role === 'STUDENT'">查看</el-button>

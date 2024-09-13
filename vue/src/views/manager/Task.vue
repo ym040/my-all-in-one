@@ -47,14 +47,23 @@
             <span v-else>无</span>
           </template>
         </el-table-column>
-        <el-table-column label="实习状态" align="center">
+        <el-table-column label="实习状态" align="center" width="120">
           <template v-slot="scope">
-            <el-switch
+            <el-select
                 v-model="scope.row.status"
-                active-value="实习中"
-                inactive-value="未实习"
-                disabled
-            ></el-switch>
+                filterable
+                placeholder="请选择实习状态"
+                :disabled="user.role === 'STUDENT' || scope.row.resumeStatus !== 1 || user.role === 'ENTERPRISE'"
+                @change="handleStatusChange(scope.row)"
+            >
+              <el-option
+                  v-for="item in statusOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+
+            </el-select>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="180">
@@ -209,6 +218,16 @@ export default {
       studentData: [],
       selectedStudents: [],  // 用于存储选中的学生
       selectedGrade: '', // 新增状态
+      statusOptions: [{
+        value: '未实习',
+        label: '未实习'
+      }, {
+        value: '实习中',
+        label: '实习中'
+      }, {
+        value: '实习结束',
+        label: '实习结束'
+      }],
     };
   },
   created() {

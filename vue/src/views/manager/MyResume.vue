@@ -171,13 +171,17 @@ export default {
 
 <style scoped>
 .box-card {
-  padding: 10px; /* 减少卡片内部的填充 */
+  padding: 10px;
   width: 50%;
   margin: 0 auto;
+  max-height: 600px; /* 设置最大高度，确保卡片不会无限增高 */
+  overflow-y: auto; /* 当内容超出高度时，显示垂直滚动条 */
+  box-sizing: border-box; /* 确保 padding 也被计算在高度内 */
 }
 
+
 .button-group {
-  margin-top: 20px;
+
   text-align: right;
 }
 

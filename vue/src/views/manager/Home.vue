@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <div class="card" style="width: 50%; margin: 0 auto; padding: 20px; height: 300px;">
+    <div class="card" style="width: 50%; margin: 0 auto; padding: 20px; height: 300px;" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">
       <div style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px">
         实习人数分布
       </div>
@@ -89,74 +89,83 @@ export default {
   },
   methods: {
     fetchChartData() {
-      Promise.all([
-        this.$request.get('student/selectCount'),          // 总人数
-        this.$request.get('apply/selectFStatusCount'),    // 未实习
-        this.$request.get('apply/selectTStatusCount'),    // 实习中
-        this.$request.get('apply/selectEndStatusCount'),  // 实习结束
-        this.$request.get('apply/selectNoApplyCount')     // 未申请
-      ]).then(([totalRes, noInternRes, inProgressRes, completedRes, noApplyRes]) => {
-        this.chartData.total = totalRes.data || 0;
-        this.chartData.noInternship = noInternRes.data || 0;
-        this.chartData.inProgress = inProgressRes.data || 0;
-        this.chartData.completed = completedRes.data || 0;
-        this.chartData.notApplied = noApplyRes.data || 0;
-        this.updateChart(); // 数据获取后更新图表
-      });
+      // 获取饼图数据并更新图表（只有 ADMIN 和 TEACHER 角色才需要）
+      if (this.user.role === 'ADMIN' || this.user.role === 'TEACHER') {
+        Promise.all([
+          this.$request.get('student/selectCount'),          // 总人数
+          this.$request.get('apply/selectFStatusCount'),    // 未实习
+          this.$request.get('apply/selectTStatusCount'),    // 实习中
+          this.$request.get('apply/selectEndStatusCount'),  // 实习结束
+          this.$request.get('apply/selectNoApplyCount')     // 未申请
+        ]).then(([totalRes, noInternRes, inProgressRes, completedRes, noApplyRes]) => {
+          this.chartData.total = totalRes.data || 0;
+          this.chartData.noInternship = noInternRes.data || 0;
+          this.chartData.inProgress = inProgressRes.data || 0;
+          this.chartData.completed = completedRes.data || 0;
+          this.chartData.notApplied = noApplyRes.data || 0;
+          this.updateChart(); // 数据获取后更新图表
+        });
+      }
     },
     initChart() {
-      this.chart = echarts.init(document.getElementById('internship-pie-chart'));
-      const option = {
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          top: '0%',
-          left: 'center',
-          orient: 'horizontal'
-        },
-        series: [
-          {
-            name: '人数分布',
-            type: 'pie',
-            radius: ['40%', '70%'], // Inner radius is 40%, outer radius is 70%
-            center: ['50%', '50%'], // Center the chart
-            data: [
-              { value: this.chartData.noInternship, name: '未实习' },
-              { value: this.chartData.inProgress, name: '实习中' },
-              { value: this.chartData.completed, name: '实习结束' },
-              { value: this.chartData.notApplied, name: '未申请' }
-            ],
-            itemStyle: {
-              borderRadius: 5,
-              borderWidth: 2, // 设置扇形的边框宽度以产生间隙效果
-              borderColor: '#fff' // 设置扇形的边框颜色为白色或者透明色
-            },
-            emphasis: {
+      // 只有在 ADMIN 或 TEACHER 角色时才初始化图表
+      if (this.user.role === 'ADMIN' || this.user.role === 'TEACHER') {
+        this.chart = echarts.init(document.getElementById('internship-pie-chart'));
+        const option = {
+          tooltip: {
+            trigger: 'item'
+          },
+          legend: {
+            top: '0%',
+            left: 'center',
+            orient: 'horizontal'
+          },
+          series: [
+            {
+              name: '人数分布',
+              type: 'pie',
+              radius: ['40%', '70%'], // 内环半径40%，外环半径70%
+              center: ['50%', '50%'], // 图表居中
+              data: [
+                { value: this.chartData.noInternship, name: '未实习' },
+                { value: this.chartData.inProgress, name: '实习中' },
+                { value: this.chartData.completed, name: '实习结束' },
+                { value: this.chartData.notApplied, name: '未申请' }
+              ],
               itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                borderRadius: 5,
+                borderWidth: 2, // 设置扇形的边框宽度以产生间隙效果
+                borderColor: '#fff' // 设置扇形的边框颜色为白色或者透明色
+              },
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
               }
             }
-          }
-        ]
-      };
-      this.chart.setOption(option);
+          ]
+        };
+        this.chart.setOption(option);
+      }
     },
     updateChart() {
-      this.chart.setOption({
-        series: [
-          {
-            data: [
-              { value: this.chartData.noInternship, name: '未实习' },
-              { value: this.chartData.inProgress, name: '实习中' },
-              { value: this.chartData.completed, name: '实习结束' },
-              { value: this.chartData.notApplied, name: '未申请' }
-            ]
-          }
-        ]
-      });
+      // 检查图表实例是否已初始化
+      if (this.chart) {
+        this.chart.setOption({
+          series: [
+            {
+              data: [
+                { value: this.chartData.noInternship, name: '未实习' },
+                { value: this.chartData.inProgress, name: '实习中' },
+                { value: this.chartData.completed, name: '实习结束' },
+                { value: this.chartData.notApplied, name: '未申请' }
+              ]
+            }
+          ]
+        });
+      }
     }
   }
 }
