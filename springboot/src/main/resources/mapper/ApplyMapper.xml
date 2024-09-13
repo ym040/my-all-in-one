@@ -143,6 +143,11 @@
         SELECT (SELECT COUNT(*) FROM student) - (SELECT COUNT(*) FROM apply);
     </select>
 
+    <select id="selectEndStatusCount" resultType="java.lang.Integer">
+        select count(*) from apply
+        where status = '实习结束'
+    </select>
+
     <delete id="deleteById">
         delete from apply
         where  id = #{id}

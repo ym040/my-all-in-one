@@ -168,5 +168,12 @@ public class ApplyService {
     public int selectNoApplyCount() {
         return applyMapper.selectNoApplyCount();
     }
+
+    /**
+     * 查询实习中人数总数
+     */
+    public int selectEndStatusCount() {
+        return applyMapper.selectEndStatusCount();
+    }
 }
 

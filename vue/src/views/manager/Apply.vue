@@ -27,15 +27,23 @@
         <el-table-column prop="address" label="工作地点"></el-table-column>
         <el-table-column prop="beginTime" label="开始时间"></el-table-column>
         <el-table-column prop="endTime" label="结束时间"></el-table-column>
-        <el-table-column label="实习状态" align="center">
+        <el-table-column label="实习状态" align="center" width="120">
           <template v-slot="scope">
-            <el-switch
+            <el-select
                 v-model="scope.row.status"
-                active-value="实习中"
-                inactive-value="未实习"
+                filterable
+                placeholder="请选择实习状态"
                 :disabled="user.role === 'STUDENT' || scope.row.resumeStatus !== 1 || user.role === 'ENTERPRISE'"
                 @change="handleStatusChange(scope.row)"
-            ></el-switch>
+            >
+              <el-option
+                  v-for="item in statusOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+
+            </el-select>
           </template>
         </el-table-column>
         <el-table-column prop="read_status" label="阅读状态" align="center">
@@ -259,6 +267,16 @@ export default {
           return time.getTime() < Date.now() - 8.64e7; //只能选择今天及今天之后的日期
         }
       },
+      statusOptions: [{
+        value: '未实习',
+        label: '未实习'
+      }, {
+        value: '实习中',
+        label: '实习中'
+      }, {
+        value: '实习结束',
+        label: '实习结束'
+      }],
     }
   },
   created() {

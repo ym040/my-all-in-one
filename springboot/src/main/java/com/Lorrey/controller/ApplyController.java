@@ -199,6 +199,15 @@ public class ApplyController {
     }
 
     /**
+     * 查询实习结束人数总数
+     */
+    @GetMapping("/selectEndStatusCount")
+    public Result selectEndStatusCount() {
+        int count = applyService.selectEndStatusCount();
+        return Result.success(count);
+    }
+
+    /**
      * 未申请人数总数
      */
     @GetMapping("/selectNoApplyCount")

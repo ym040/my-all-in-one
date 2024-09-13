@@ -95,4 +95,9 @@ public interface ApplyMapper {
      * 未申请人数总数
      */
     int selectNoApplyCount();
+
+    /**
+     * 查询实习中人数总数
+     */
+    int selectEndStatusCount();
 }
