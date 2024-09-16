@@ -20,13 +20,13 @@
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="教师"></el-table-column>
-        <el-table-column prop="phone" label="联系电话"></el-table-column>
-        <el-table-column prop="enterpriseName" label="单位名称"></el-table-column>
-        <el-table-column prop="jobName" label="岗位名称"></el-table-column>
+        <el-table-column prop="phone" label="联系电话" width="120"></el-table-column>
+        <el-table-column prop="enterpriseName" label="单位名称" width="120"></el-table-column>
+        <el-table-column prop="jobName" label="岗位名称" width="150"></el-table-column>
         <el-table-column prop="salary" label="薪资"></el-table-column>
         <el-table-column prop="address" label="工作地点"></el-table-column>
-        <el-table-column prop="beginTime" label="开始时间"></el-table-column>
-        <el-table-column prop="endTime" label="结束时间"></el-table-column>
+        <el-table-column prop="beginTime" label="开始时间" width="120"></el-table-column>
+        <el-table-column prop="endTime" label="结束时间" width="100"></el-table-column>
         <el-table-column label="实习状态" align="center" width="120">
           <template v-slot="scope">
             <el-select
@@ -58,7 +58,7 @@
             <el-tag v-if="scope.row.resumeStatus === 2" type="danger">未通过</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column label="操作" align="center" width="300">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)" v-if="user.role === 'ADMIN' || user.role === 'STUDENT'">编辑</el-button>
             <el-button size="mini" type="danger" plain @click="del(scope.row.id)" v-if="user.role === 'ADMIN'">删除</el-button>
@@ -233,6 +233,10 @@
       </div>
     </el-dialog>
 
+    <!-- 没有简历时的提示对话框 -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
+      <span>您还没有简历，请新建后再申请岗位。</span>
+    </el-dialog>
 
   </div>
 </template>
@@ -244,17 +248,18 @@ export default {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
-      pageSize: 10,  // 每页显示的个数
+      pageSize: 7,  // 每页显示的个数
       total: 0,
       username: null,
       fromVisible: false,
       ResumeFromVisible: false,
+      dialogVisible: false,  // 控制对话框的显示
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         username: [
           {required: true, message: '请输入账号', trigger: 'blur'},
-        ]
+        ],
       },
       ids: [],
       classData: [],
@@ -333,7 +338,15 @@ export default {
         this.form.classId = this.user.classId;
         this.form.name = this.user.name;
       }
-      this.fromVisible = true   // 打开弹窗
+      if (this.user.role === 'STUDENT') {
+        this.$request.get(`/resume/selectByStudentId/${this.user.id}`).then(res => {
+          if (res.data) {
+            this.fromVisible = true   // 打开弹窗
+          } else {
+            this.dialogVisible = true  // 如果没有简历，显示提示对话框
+          }
+        })
+      }
     },
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据

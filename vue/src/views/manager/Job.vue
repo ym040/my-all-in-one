@@ -8,8 +8,8 @@
     </div>
 
     <div class="operation">
-      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN'">新增</el-button>
-      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN'">批量删除</el-button>
+      <el-button type="primary" plain @click="handleAdd" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">新增</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">批量删除</el-button>
     </div>
 
     <div class="table">
@@ -23,7 +23,7 @@
         <el-table-column prop="salary" label="薪水"></el-table-column>
         <el-table-column prop="jobDescribe" label="岗位描述" show-overflow-tooltip></el-table-column>
         <el-table-column prop="jobRequire" label="专业要求" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="address" label="工作地点"></el-table-column>
+        <el-table-column prop="address" label="工作地点" show-overflow-tooltip></el-table-column>
         <el-table-column prop="workTime" label="工作时间"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center" v-if="user.role !== 'TEACHER'">
@@ -58,9 +58,12 @@
           <el-input v-model="form.direction" placeholder="行业方向"></el-input>
         </el-form-item>
         <el-form-item label="单位名称" prop="enterpriseId">
-          <el-select v-model="form.enterpriseId" placeholder="请选择单位" style="width: 100%">
+          <el-select v-model="form.enterpriseId" placeholder="请选择单位" style="width: 100%" v-if="user.role === 'ADMIN'">
             <el-option v-for="item in enterpriseData" :label="item.name" :value="item.id"></el-option>
           </el-select>
+          <!-- 企业用户看到的是当前用户的名称，绑定的是 enterpriseId -->
+          <el-input :value="user.name" disabled v-if="user.role === 'ENTERPRISE'"></el-input>
+          <input type="hidden" v-model="form.enterpriseId" v-if="user.role === 'ENTERPRISE'" />  <!-- 隐藏字段存储 enterpriseId -->
         </el-form-item>
         <el-form-item label="招聘人数" prop="count">
           <el-input v-model="form.count" placeholder="招聘人数"></el-input>
@@ -137,7 +140,7 @@ export default {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
-      pageSize: 10,  // 每页显示的个数
+      pageSize: 7,  // 每页显示的个数
       total: 0,
       name: null,
       fromVisible: false,
@@ -191,6 +194,12 @@ export default {
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+
+          // 如果当前用户角色是企业用户，确保 enterpriseId 正确赋值为当前用户的 id
+          if (this.user.role === 'ENTERPRISE') {
+            this.form.enterpriseId = this.user.id;  // 这里手动赋值
+          }
+
           this.$request({
             url: this.form.id ? '/job/update' : '/job/add',
             method: this.form.id ? 'PUT' : 'POST',

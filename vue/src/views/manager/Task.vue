@@ -22,8 +22,8 @@
         <el-table-column prop="studentName" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="指导老师"></el-table-column>
-        <el-table-column prop="jobName" label="岗位"></el-table-column>
-        <el-table-column prop="enterpriseName" label="公司名称"></el-table-column>
+        <el-table-column prop="jobName" label="岗位名称" width="150"></el-table-column>
+        <el-table-column prop="enterpriseName" label="公司名称" width="120"></el-table-column>
         <el-table-column prop="file" label="三方协议">
           <template v-slot="scope">
             <el-button v-if="scope.row.file" type="text" @click="viewFile(scope.row.file)">下载</el-button>
@@ -37,9 +37,9 @@
             <span v-else>无</span>
           </template>
         </el-table-column>
-        <el-table-column prop="enterpriseRemark" label="企业评价"></el-table-column>
-        <el-table-column prop="teacherRemark" label="教师评价"></el-table-column>
-        <el-table-column prop="self" label="自我鉴定"></el-table-column>
+        <el-table-column prop="enterpriseRemark" label="企业评价" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="teacherRemark" label="教师评价" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="self" label="自我鉴定" show-overflow-tooltip></el-table-column>
         <el-table-column prop="grade" label="成绩鉴定"></el-table-column>
         <el-table-column prop="report" label="实践报告">
           <template v-slot="scope">
@@ -207,7 +207,7 @@ export default {
     return {
       tableData: [],
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 7,
       total: 0,
       fromVisible: false,
       editVisible: false,

@@ -5,7 +5,7 @@
     </div>
 
     <div style="display: flex; margin: 10px 0">
-      <div style="width: 50%;" class="card">
+      <div style="width: 50%;" class="card card-fixed">
         <div style="margin-bottom: 30px; font-size: 20px; font-weight: bold">公告列表</div>
         <div>
           <el-timeline slot="reference">
@@ -21,7 +21,7 @@
           </el-timeline>
         </div>
       </div>
-      <div style="width: 50%;" class="card">
+      <div style="width: 50%;" class="card card-fixed">
         <div style="margin-bottom: 30px; font-size: 20px; font-weight: bold">实习安排</div>
         <div>
           <el-timeline slot="reference"> <!--reverse-->
@@ -176,5 +176,11 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   padding: 15px;
+  overflow: hidden;
 }
+.card-fixed {
+  max-height: 250px; /* 固定卡片高度，按需调整 */
+  overflow: hidden;  /* 隐藏超出部分 */
+}
+
 </style>

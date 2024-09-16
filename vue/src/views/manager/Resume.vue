@@ -17,8 +17,8 @@
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="studentId" label="学生ID"></el-table-column>
         <el-table-column prop="name" label="简历名称"></el-table-column>
-        <el-table-column prop="tel" label="电话"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="tel" label="电话" width="120"></el-table-column>
+        <el-table-column prop="email" label="邮箱" width="120"></el-table-column>
         <el-table-column prop="address" label="现居城市"></el-table-column>
         <el-table-column prop="gender" label="性别"></el-table-column>
         <el-table-column prop="status" label="当前状态"></el-table-column>
@@ -125,7 +125,7 @@ export default {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
-      pageSize: 10,  // 每页显示的个数
+      pageSize: 7,  // 每页显示的个数
       total: 0,
       name: null,
       fromVisible: false,
