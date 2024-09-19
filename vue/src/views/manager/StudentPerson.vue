@@ -38,14 +38,14 @@
 
 <script>
 export default {
-  name: "AdminPerson",
+  name: "StudentPerson",
   data() {
     return {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}')
     }
   },
   created() {
-
+    this.getNames()
   },
   methods: {
     update() {
@@ -69,6 +69,22 @@ export default {
       // 把user的头像属性换成上传的图片的链接
       this.$set(this.user, 'avatar', response.data)
     },
+    getNames(){
+      this.$request.get(`/college/selectById/${this.user.collegeId}`).then(res => {
+        this.user.collegeName = res.data.name
+        console.log(this.user.collegeName)
+      }),
+
+      this.$request.get(`/speciality/selectById/${this.user.specialityId}`).then(res => {
+        this.user.specialityName = res.data.name
+        console.log(this.user.specialityName)
+      }),
+
+      this.$request.get(`/classes/selectById/${this.user.classId}`).then(res => {
+        this.user.className = res.data.name
+        console.log(this.user.className)
+      })
+    }
   }
 }
 </script>

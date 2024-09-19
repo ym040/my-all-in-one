@@ -144,6 +144,7 @@ export default {
     },
     save() {   // 保存简历
       this.$refs.formRef.validate(valid => {
+        //console.log(this.form)
         if (valid) {
           const url = this.form.id ? '/resume/update' : '/resume/add'
           const method = this.form.id ? 'PUT' : 'POST'
@@ -163,6 +164,7 @@ export default {
       })
     },
     reset() {   // 重置简历信息
+      this.$refs.formRef.resetFields();
       this.form = JSON.parse(JSON.stringify(this.originalForm))  // 恢复到原始数据
     },
   }

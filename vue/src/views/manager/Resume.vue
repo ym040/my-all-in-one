@@ -25,11 +25,11 @@
         <el-table-column prop="city" label="意向城市"></el-table-column>
         <el-table-column prop="department" label="期望职位"></el-table-column>
         <el-table-column prop="salary" label="期望薪资"></el-table-column>
-        <el-table-column prop="person" label="个人总结"></el-table-column>
-        <el-table-column prop="education" label="教育背景"></el-table-column>
-        <el-table-column prop="project" label="项目经历"></el-table-column>
-        <el-table-column prop="field120" label="技能及证书"></el-table-column>
-        <el-table-column prop="honor" label="荣誉奖项"></el-table-column>
+        <el-table-column prop="person" label="个人总结" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="education" label="教育背景" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="project" label="项目经历" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="skills" label="技能及证书" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="honor" label="荣誉奖项" show-overflow-tooltip></el-table-column>
 
         <el-table-column label="操作" width="180" align="center" v-if="user.role === 'ADMIN' || user.role === 'ENTERPRISE'">
           <template v-slot="scope">
@@ -101,7 +101,7 @@
         <el-form-item label="项目经历" prop="project">
           <el-input v-model="form.project" placeholder="项目经历"></el-input>
         </el-form-item>
-        <el-form-item label="技能及证书" prop="field120">
+        <el-form-item label="技能及证书" prop="skills">
           <el-input v-model="form.skills" placeholder="技能及证书"></el-input>
         </el-form-item>
         <el-form-item label="荣誉奖项" prop="honor">
@@ -125,7 +125,7 @@ export default {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
-      pageSize: 7,  // 每页显示的个数
+      pageSize: 6,  // 每页显示的个数
       total: 0,
       name: null,
       fromVisible: false,
