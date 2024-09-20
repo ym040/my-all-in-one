@@ -16,7 +16,7 @@
         <el-table-column type="selection" width="55" align="center" v-if="user.role === 'ADMIN'"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column prop="stuId" label="学生ID"></el-table-column>
-        <el-table-column prop="username" label="用户名"></el-table-column>
+        <el-table-column prop="username" label="用户名" width="120"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="教师"></el-table-column>
@@ -113,12 +113,6 @@
           <el-select v-model="form.jobId" placeholder="请选择岗位" style="width: 100%">
             <el-option v-for="item in jobData" :label="item.name" :value="item.id"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="薪资" prop="salary">
-          <el-input v-model="form.salary" placeholder="薪资"></el-input>
-        </el-form-item>
-        <el-form-item label="工作地点" prop="address">
-          <el-input v-model="form.address" placeholder="工作地点"></el-input>
         </el-form-item>
         <el-form-item label="开始时间" prop="beginTime">
           <div class="block">
@@ -246,7 +240,7 @@ export default {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
-      pageSize: 7,  // 每页显示的个数
+      pageSize: 6,  // 每页显示的个数
       total: 0,
       username: null,
       fromVisible: false,
