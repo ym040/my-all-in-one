@@ -104,7 +104,13 @@ public class UserActionsController {
         //System.out.println(list);
         //根据用户行为进行推荐算法逻辑计算
         List<Job> recommendList = userActionsService.recommend(list);
-        //System.out.println(recommendList);
+        //遍历列表 根据enterpriseId查询到enterpriseName
+        for (Job job : recommendList) {
+            System.out.println(job.getEnterpriseId());
+            job.setEnterpriseName(userActionsService.getEnterpriseName(job.getEnterpriseId()));
+        }
+        System.out.println("------------------------------------------------");
+        System.out.println(recommendList);
         return Result.success(recommendList);
     }
 

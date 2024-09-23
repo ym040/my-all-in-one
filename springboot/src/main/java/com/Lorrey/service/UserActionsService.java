@@ -136,7 +136,7 @@ public class UserActionsService {
             for (UserActions action : similarUserActions) {
                 //System.out.println("Job ID: " + action.getJobId());
                 if (!currentUserJobIds.contains(action.getJobId())) {
-                    // 将该用户未访问过的岗位添加到推荐列表
+                    // 将该用户未访问过的岗位添加到推荐列表`
                     Job job = jobMapper.selectById(action.getJobId());
                     recommendedJobs.add(job);
                     //System.out.println("Recommended job added: " + job);
@@ -176,5 +176,12 @@ public class UserActionsService {
                 (Math.sqrt(currentJobIds.size()) * Math.sqrt(otherJobIds.size()));
 
         return similarity;
+    }
+
+    /**
+    * 根据企业ID获取企业名称
+     */
+    public String getEnterpriseName(Integer enterpriseId) {
+        return jobMapper.getEnterpriseName(enterpriseId);
     }
 }

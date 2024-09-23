@@ -46,4 +46,9 @@ public interface JobMapper {
      * @return
      */
     List<Job> selectEnterpriseJob(Integer enterpriseId);
+
+    /**
+     * 根据企业ID获取企业名称
+     */
+    String getEnterpriseName(Integer enterpriseId);
 }
