@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" style="padding: 15px">
+    <div class="card" style="padding: 15px;">
       您好，{{ user?.name }}！欢迎使用本系统
     </div>
 

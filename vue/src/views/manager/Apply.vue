@@ -21,7 +21,7 @@
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column prop="teacherName" label="教师"></el-table-column>
         <el-table-column prop="phone" label="联系电话" width="120"></el-table-column>
-        <el-table-column prop="enterpriseName" label="单位名称" width="120"></el-table-column>
+        <el-table-column prop="enterpriseName" label="单位名称" width="130"></el-table-column>
         <el-table-column prop="jobName" label="岗位名称" width="150"></el-table-column>
         <el-table-column prop="beginTime" label="开始时间" width="120"></el-table-column>
         <el-table-column prop="endTime" label="结束时间" width="100"></el-table-column>
