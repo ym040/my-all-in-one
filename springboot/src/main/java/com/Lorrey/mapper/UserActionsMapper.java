@@ -1,8 +1,7 @@
 package com.Lorrey.mapper;
 
-import com.Lorrey.entity.Job;
 import com.Lorrey.entity.UserActions;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -12,32 +11,32 @@ import java.util.List;
 public interface UserActionsMapper {
 
     /**
-      * 新增
+      * 新增用户行为记录
     */
     int insert(UserActions userActions);
 
     /**
-      * 删除
+      * 根据ID删除用户行为记录
     */
     int deleteById(Integer id);
 
     /**
-      * 修改
+      * 根据ID更新用户行为记录
     */
     int updateById(UserActions userActions);
 
     /**
-      * 根据ID查询
+      * 根据ID查询用户行为记录
     */
     UserActions selectById(Integer id);
 
     /**
-      * 查询所有
+      * 查询所有用户行为记录
     */
     List<UserActions> selectAll(UserActions userActions);
 
     /**
-     * 根据UserID查询
+     * 根据用户ID查询用户行为记录
      */
     List<UserActions> selectByUserId(Integer userId);
 

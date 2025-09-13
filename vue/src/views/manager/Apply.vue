@@ -281,7 +281,7 @@ export default {
     this.loadTeachers();
     this.loadClasses();
     this.loadEnterprise();
-    this.loadJob();
+    // this.loadJob();
   },
   methods: {
     loadClasses() {

@@ -10,7 +10,7 @@ public class SpringbootApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringbootApplication.class, args);
-        System.out.println("***************i实习启动成功！***************");
+        System.out.println("***************实习启动成功！***************");
     }
 
 }

@@ -1,37 +1,58 @@
 <template>
-  <div>
-    <div class="card" style="padding: 15px;">
-      您好，{{ user?.name }}！欢迎使用本系统
+  <div class="shinchan-home">
+    <div class="welcome-card shinchan-card">
+      <div class="welcome-content">
+        <div class="welcome-text">您好，{{ user?.name }}！欢迎使用本系统</div>
+      </div>
     </div>
 
-    <div style="display: flex; margin: 10px 0">
-      <div style="width: 50%;" class="card card-fixed">
-        <div style="margin-bottom: 30px; font-size: 20px; font-weight: bold">公告列表</div>
-        <div>
+    <div class="content-container">
+      <div class="notices-section shinchan-card">
+        <div class="section-header">
+          <i class="el-icon-message section-icon"></i>
+          <div class="section-title">公告列表</div>
+        </div>
+        <div class="timeline-container">
           <el-timeline slot="reference">
-            <el-timeline-item v-for="item in notices" :key="item.id" :timestamp="item.time">
+            <el-timeline-item
+              v-for="item in notices"
+              :key="item.id"
+              :timestamp="item.time"
+              class="shinchan-timeline-item"
+            >
               <el-popover
-                  placement="right"
-                  width="200"
-                  trigger="hover"
-                  :content="item.content">
-                <span slot="reference">{{ item.title }}</span>
+                placement="right"
+                width="200"
+                trigger="hover"
+                :content="item.content"
+              >
+                <span slot="reference" class="timeline-content">{{ item.title }}</span>
               </el-popover>
             </el-timeline-item>
           </el-timeline>
         </div>
       </div>
-      <div style="width: 50%;" class="card card-fixed">
-        <div style="margin-bottom: 30px; font-size: 20px; font-weight: bold">实习安排</div>
-        <div>
-          <el-timeline slot="reference"> <!--reverse-->
-            <el-timeline-item v-for="item in workplans" :key="item.id" :timestamp="item.time">
+
+      <div class="workplans-section shinchan-card">
+        <div class="section-header">
+          <i class="el-icon-date section-icon"></i>
+          <div class="section-title">实习安排</div>
+        </div>
+        <div class="timeline-container">
+          <el-timeline slot="reference">
+            <el-timeline-item
+              v-for="item in workplans"
+              :key="item.id"
+              :timestamp="item.time"
+              class="shinchan-timeline-item"
+            >
               <el-popover
-                  placement="right"
-                  width="200"
-                  trigger="hover"
-                  :content="item.content">
-                <span slot="reference">{{ item.name }}</span>
+                placement="right"
+                width="200"
+                trigger="hover"
+                :content="item.content"
+              >
+                <span slot="reference" class="timeline-content">{{ item.name }}</span>
               </el-popover>
             </el-timeline-item>
           </el-timeline>
@@ -39,12 +60,15 @@
       </div>
     </div>
 
-    <div class="card" style="width: 50%; margin: 0 auto; padding: 20px; height: 300px;" v-if="user.role === 'ADMIN' || user.role === 'TEACHER'">
-      <div style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px">
-        实习人数分布
+    <div
+      class="chart-card shinchan-card"
+      v-if="user.role === 'ADMIN' || user.role === 'TEACHER'"
+    >
+      <div class="chart-header">
+        <i class="el-icon-data-analysis chart-icon"></i>
+        <div class="chart-title">实习人数分布</div>
       </div>
-<!--      <div style="text-align: center; margin-bottom: 10px">总人数：{{ chartData.total }}</div> &lt;!&ndash; 显示总人数 &ndash;&gt;-->
-      <div id="internship-pie-chart" style="width: 100%; height: 250px;"></div> <!-- 缩小图表高度 -->
+      <div id="internship-pie-chart" class="chart-container"></div>
     </div>
   </div>
 </template>
@@ -172,15 +196,149 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-  padding: 15px;
-  overflow: hidden;
-}
-.card-fixed {
-  max-height: 250px; /* 固定卡片高度，按需调整 */
-  overflow: hidden;  /* 隐藏超出部分 */
+.shinchan-home {
+  padding: 20px;
+  background: linear-gradient(135deg, #E0FFFF, #FFE4E1);
+  min-height: 100vh;
 }
 
+.welcome-card {
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border: 3px dashed #FF6347;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+}
+
+.welcome-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #8B4513;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.content-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.notices-section, .workplans-section {
+  flex: 1;
+  padding: 20px;
+  border: 3px solid #87CEEB;
+  border-radius: 20px;
+  background-color: #FFFACD;
+  box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed #FF69B4;
+}
+
+.section-icon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #4169E1;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4169E1;
+}
+
+.timeline-container {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.shinchan-timeline-item ::v-deep .el-timeline-item__timestamp {
+  color: #808080;
+  font-size: 12px;
+}
+
+.timeline-content {
+  color: #4682B4;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.timeline-content:hover {
+  color: #FF4500;
+  text-decoration: underline;
+}
+
+.chart-card {
+  width: 50%;
+  margin: 0 auto;
+  padding: 20px;
+  height: 350px;
+  background-color: #FFFACD;
+  border: 3px solid #98FB98;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(152, 251, 152, 0.3);
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.chart-icon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #32CD32;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #32CD32;
+  text-align: center;
+}
+
+.chart-container {
+  width: 100%;
+  height: 280px;
+}
+
+.shinchan-card {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* 滚动条样式 */
+.timeline-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.timeline-container::-webkit-scrollbar-thumb {
+  background-color: #FFB6C1;
+  border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    flex-direction: column;
+  }
+
+  .chart-card {
+    width: 100%;
+  }
+}
 </style>

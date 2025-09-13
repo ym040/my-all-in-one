@@ -130,7 +130,7 @@ export default {
 </script>
 
 <style scoped>
-/deep/.el-form-item__label {
+/deep/z.el-form-item__label {
   font-weight: bold;
 }
 /deep/.el-upload {

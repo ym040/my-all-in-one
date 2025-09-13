@@ -16,7 +16,7 @@ public enum ResultCodeEnum {
     PARAM_PASSWORD_ERROR("5005", "原密码输入错误"),
     FILE_UPLOAD_ERROR("5006", "文件上传失败"),
 
-    ADMIN_NOT_REGISTER("5006", "管理员不允许被注册")
+    ADMIN_NOT_REGISTER("5007", "管理员不允许被注册")
     ;
 
     public String code;

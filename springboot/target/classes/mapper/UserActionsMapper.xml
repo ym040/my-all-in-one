@@ -5,49 +5,49 @@
 <mapper namespace="com.Lorrey.mapper.UserActionsMapper">
 
     <sql id="Base_Column_List">
-        id,userId,jobId,actionType,localDateTime
+        id, user_id, job_id, action_type, create_time
     </sql>
 
     <select id="selectAll" resultType="com.Lorrey.entity.UserActions">
         select
         <include refid="Base_Column_List" />
-        from userActions
+        from useractions
         <where>
-            <if test="id != null"> and id= #{id}</if>
-            <if test="userId != null"> and userId= #{userId}</if>
-            <if test="jobId != null"> and jobId= #{jobId}</if>
-            <if test="actionType != null"> and actionType= #{actionType}</if>
-            <if test="localDateTime != null"> and localDateTime= #{localDateTime}</if>
+            <if test="id != null"> and id = #{id}</if>
+            <if test="userId != null"> and user_id = #{userId}</if>
+            <if test="jobId != null"> and job_id = #{jobId}</if>
+            <if test="actionType != null"> and action_type = #{actionType}</if>
+            <if test="localDateTime != null"> and create_time = #{localDateTime}</if>
         </where>
     </select>
 
     <select id="selectById" resultType="com.Lorrey.entity.UserActions">
         select
         <include refid="Base_Column_List" />
-        from userActions
+        from useractions
         where id = #{id}
     </select>
 
     <select id="selectByUserId" resultType="com.Lorrey.entity.UserActions">
         select
         <include refid="Base_Column_List" />
-        from userActions
-        where userId = #{userId}
+        from useractions
+        where user_id = #{userId}
     </select>
 
     <delete id="deleteById">
-        delete from userActions
-        where  id = #{id}
+        delete from useractions
+        where id = #{id}
     </delete>
 
     <insert id="insert" parameterType="com.Lorrey.entity.UserActions" useGeneratedKeys="true">
-        insert into userActions
+        insert into useractions
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
-                <if test="userId != null">userId,</if>
-                <if test="jobId != null">jobId,</if>
-                <if test="actionType != null">actionType,</if>
-                <if test="localDateTime != null">localDateTime,</if>
+                <if test="userId != null">user_id,</if>
+                <if test="jobId != null">job_id,</if>
+                <if test="actionType != null">action_type,</if>
+                <if test="localDateTime != null">create_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -59,19 +59,19 @@
     </insert>
 
     <update id="updateById" parameterType="com.Lorrey.entity.UserActions">
-        update userActions
+        update useractions
         <set>
             <if test="userId != null">
-                userId = #{userId},
+                user_id = #{userId},
             </if>
             <if test="jobId != null">
-                jobId = #{jobId},
+                job_id = #{jobId},
             </if>
             <if test="actionType != null">
-                actionType = #{actionType},
+                action_type = #{actionType},
             </if>
             <if test="localDateTime != null">
-                timestamp = #{localDateTime},
+                create_time = #{localDateTime},
             </if>
         </set>
         where id = #{id}

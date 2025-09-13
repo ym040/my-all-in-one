@@ -1,6 +1,7 @@
 package com.Lorrey.mapper;
 
 import com.Lorrey.entity.Job;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -33,7 +34,6 @@ public interface JobMapper {
       * 查询所有
     */
     List<Job> selectAll(Job job);
-
 
     /**
      * 根据企业ID查询 + 企业名称模糊查询

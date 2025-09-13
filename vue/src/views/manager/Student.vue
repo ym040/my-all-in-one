@@ -1,25 +1,78 @@
 <template>
-  <div>
+  <div class="shinchan-student">
     <div class="search">
-      <el-input placeholder="请输入账号查询" style="width: 200px" v-model="username"></el-input>
-      <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
-      <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
+      <el-input
+        placeholder="请输入账号查询"
+        style="width: 200px"
+        v-model="username"
+        class="shinchan-input"
+      ></el-input>
+      <el-button
+        type="primary"
+        plain
+        style="margin-left: 10px"
+        @click="load(1)"
+        class="shinchan-button"
+      >
+        <i class="el-icon-search button-icon"></i>
+        查询
+      </el-button>
+      <el-button
+        type="warning"
+        plain
+        style="margin-left: 10px"
+        @click="reset"
+        class="shinchan-button"
+      >
+        <i class="el-icon-refresh button-icon"></i>
+        重置
+      </el-button>
     </div>
 
     <div class="operation">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+      <el-button
+        type="primary"
+        plain
+        @click="handleAdd"
+        class="shinchan-button"
+      >
+        <i class="el-icon-circle-plus button-icon"></i>
+        新增
+      </el-button>
+      <el-button
+        type="danger"
+        plain
+        @click="delBatch"
+        class="shinchan-button"
+      >
+        <i class="el-icon-delete button-icon"></i>
+        批量删除
+      </el-button>
     </div>
 
     <div class="table">
-      <el-table :data="tableData" strip @selection-change="handleSelectionChange">
+      <el-table
+        :data="tableData"
+        stripe
+        @selection-change="handleSelectionChange"
+        class="shinchan-table"
+      >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="70" align="center" sortable></el-table-column>
         <el-table-column label="头像">
           <template v-slot="scope">
-            <div style="display: flex; align-items: center">
-              <el-image style="width: 40px; height: 40px; border-radius: 50%" v-if="scope.row.avatar"
-                        :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]"></el-image>
+            <div style="display: flex; align-items: center; justify-content: center;">
+              <el-image
+                style="width: 40px; height: 40px; border-radius: 50%"
+                v-if="scope.row.avatar"
+                :src="scope.row.avatar"
+                :preview-src-list="[scope.row.avatar]"
+              ></el-image>
+              <img
+                v-else
+                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                style="width: 40px; height: 40px; border-radius: 50%"
+              />
             </div>
           </template>
         </el-table-column>
@@ -31,8 +84,26 @@
         <el-table-column prop="className" label="班级"></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
-            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" plain @click="del(scope.row.id)">删除</el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              plain
+              @click="handleEdit(scope.row)"
+              class="shinchan-button edit-button"
+            >
+              <i class="el-icon-edit button-icon-small"></i>
+              编辑
+            </el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              plain
+              @click="del(scope.row.id)"
+              class="shinchan-button delete-button"
+            >
+              <i class="el-icon-delete button-icon-small"></i>
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -45,14 +116,35 @@
             :page-sizes="[5, 10, 20]"
             :page-size="pageSize"
             layout="total, prev, pager, next"
-            :total="total">
+            :total="total"
+            class="shinchan-pagination"
+        >
         </el-pagination>
       </div>
     </div>
 
 
-    <el-dialog title="学生信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
-      <el-form :model="form" label-width="100px" style="padding-right: 50px" :rules="rules" ref="formRef">
+    <el-dialog
+      title="学生信息"
+      :visible.sync="fromVisible"
+      width="40%"
+      :close-on-click-modal="false"
+      destroy-on-close
+      class="shinchan-dialog"
+    >
+      <div class="dialog-header">
+        <i class="el-icon-edit-outline form-icon"></i>
+        <span>填写学生信息</span>
+      </div>
+
+      <el-form
+        :model="form"
+        label-width="100px"
+        style="padding-right: 50px"
+        :rules="rules"
+        ref="formRef"
+        class="shinchan-form"
+      >
         <el-form-item label="头像">
           <el-upload
               class="avatar-uploader"
@@ -61,39 +153,111 @@
               list-type="picture"
               :on-success="handleAvatarSuccess"
           >
-            <el-button type="primary">上传头像</el-button>
+            <el-button
+              type="primary"
+              class="shinchan-button upload-button"
+            >
+              <i class="el-icon-upload button-icon"></i>
+              上传头像
+            </el-button>
           </el-upload>
         </el-form-item>
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="用户名"></el-input>
+          <div class="input-wrapper">
+            <i class="el-icon-user input-icon"></i>
+            <el-input
+              v-model="form.username"
+              placeholder="用户名"
+              class="shinchan-input"
+            ></el-input>
+          </div>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name" placeholder="姓名"></el-input>
+          <div class="input-wrapper">
+            <i class="el-icon-user input-icon"></i>
+            <el-input
+              v-model="form.name"
+              placeholder="姓名"
+              class="shinchan-input"
+            ></el-input>
+          </div>
         </el-form-item>
         <el-form-item label="学院" prop="collegeId">
-          <el-select v-model="form.collegeId" placeholder="请选择学院" style="width: 100%" @change="handleCollegeChange">
-            <el-option v-for="item in collegeData" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+          <div class="select-wrapper">
+            <i class="el-icon-office-building input-icon"></i>
+            <el-select
+              v-model="form.collegeId"
+              placeholder="请选择学院"
+              style="width: 100%"
+              @change="handleCollegeChange"
+              class="shinchan-select"
+            >
+              <el-option
+                v-for="item in collegeData"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </div>
         </el-form-item>
         <el-form-item label="专业" prop="specialityId">
-          <el-select v-model="form.specialityId" placeholder="请选择专业" style="width: 100%" @change="handleSpecialityChange">
-            <el-option v-for="item in specialityData" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+          <div class="select-wrapper">
+            <i class="el-icon-collection input-icon"></i>
+            <el-select
+              v-model="form.specialityId"
+              placeholder="请选择专业"
+              style="width: 100%"
+              @change="handleSpecialityChange"
+              class="shinchan-select"
+            >
+              <el-option
+                v-for="item in specialityData"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </div>
         </el-form-item>
         <el-form-item label="班级" prop="classId">
-          <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
-            <el-option v-for="item in classData" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+          <div class="select-wrapper">
+            <i class="el-icon-s-custom input-icon"></i>
+            <el-select
+              v-model="form.classId"
+              placeholder="请选择班级"
+              style="width: 100%"
+              class="shinchan-select"
+            >
+              <el-option
+                v-for="item in classData"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </div>
         </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="fromVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button
+          @click="fromVisible = false"
+          class="shinchan-button cancel-button"
+        >
+          <i class="el-icon-close button-icon"></i>
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="save"
+          class="shinchan-button confirm-button"
+        >
+          <i class="el-icon-check button-icon"></i>
+          确 定
+        </el-button>
       </div>
     </el-dialog>
-
-
   </div>
 </template>
 
@@ -261,5 +425,144 @@ export default {
 </script>
 
 <style scoped>
+.shinchan-student {
+  padding: 20px;
+  background: linear-gradient(135deg, #E0FFFF, #FFE4E1);
+  min-height: 100vh;
+  font-family: 'Comic Sans MS', '幼圆', '微软雅黑', sans-serif;
+}
 
+.shinchan-input ::v-deep .el-input__inner {
+  border: 2px solid #87CEEB;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.shinchan-button {
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-icon {
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.button-icon-small {
+  margin-right: 3px;
+  font-size: 12px;
+}
+
+.shinchan-table ::v-deep .el-table__header th {
+  background-color: #FFD700;
+  color: #8B4513;
+  font-weight: bold;
+}
+
+.shinchan-table ::v-deep .el-table__row:hover {
+  background-color: #FFE4E1 !important;
+}
+
+.edit-button {
+  background-color: #87CEEB;
+  border: none;
+  color: white;
+  margin-right: 5px;
+}
+
+.delete-button {
+  background-color: #FF6347;
+  border: none;
+  color: white;
+}
+
+.shinchan-pagination ::v-deep .el-pager li.active {
+  background-color: #FF69B4 !important;
+  color: white;
+}
+
+.shinchan-pagination ::v-deep .el-pager li:hover {
+  color: #FF69B4;
+}
+
+.shinchan-dialog ::v-deep .el-dialog__header {
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-bottom: 2px dashed #FF6347;
+  padding: 15px 20px;
+  border-radius: 15px 15px 0 0;
+}
+
+.shinchan-dialog ::v-deep .el-dialog__title {
+  color: #8B4513;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-icon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #8B4513;
+}
+
+.input-wrapper, .select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #87CEEB;
+  border-radius: 20px;
+  padding: 5px 15px;
+}
+
+.input-icon {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #4169E1;
+}
+
+.shinchan-select ::v-deep .el-input__inner {
+  border: none;
+  outline: none;
+  background: transparent;
+  height: 40px;
+}
+
+.shinchan-select ::v-deep .el-input__icon {
+  display: none;
+}
+
+.upload-button {
+  background: linear-gradient(45deg, #98FB98, #32CD32);
+  border: none;
+  color: white;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  border-top: 2px dashed #87CEEB;
+}
+
+.cancel-button {
+  background: linear-gradient(45deg, #D3D3D3, #A9A9A9);
+  border: none;
+  color: white;
+  margin-right: 20px;
+}
+
+.confirm-button {
+  background: linear-gradient(45deg, #87CEEB, #4169E1);
+  border: none;
+  color: white;
+}
 </style>

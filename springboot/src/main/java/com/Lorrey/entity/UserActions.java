@@ -1,10 +1,10 @@
 package com.Lorrey.entity;
 
 import lombok.Data;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 用户行为
@@ -21,7 +21,9 @@ public class UserActions implements Serializable {
     private Integer jobId;
     /** 用户行为 */
     private String actionType;
-    /** 当前时间戳 */
-    private LocalDateTime localDateTime;
+    /** 创建时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime localDateTime; // 保持变量名不变，但注释改为"创建时间"
 
+    // 可以添加构造函数和其他方法
 }
